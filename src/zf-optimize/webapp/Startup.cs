@@ -32,10 +32,13 @@ namespace webapp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = @"Server=db;Database=master;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
+            var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
+            var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
 
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(connection));
+                options => options.UseSqlServer(connectionAuthDb));
+            services.AddDbContext<ZFContext>(
+                options => options.UseSqlServer(connectionZFDb));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
@@ -84,6 +87,11 @@ namespace webapp
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    context.Database.Migrate();
+                }
+
+                using (var context = serviceScope.ServiceProvider.GetService<ZFContext>())
                 {
                     context.Database.Migrate();
                 }
