@@ -15,4 +15,5 @@ services:
       ACCEPT_EULA: "Y"
   orbackend:
     build:
-      context: ./orbackend
+      context: .
+      dockerfile: orbackend/docker/Dockerfile

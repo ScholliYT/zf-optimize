@@ -40,11 +40,12 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dockerfile" />
+    <Content Include="docker\Dockerfile" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
+    <Folder Include="docker\" />
     <Folder Include="services\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
