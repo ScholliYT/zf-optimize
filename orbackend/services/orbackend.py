@@ -23,6 +23,3 @@ def SimpleSatProgram():
         print('x = %i' % solver.Value(x))
         print('y = %i' % solver.Value(y))
         print('z = %i' % solver.Value(z))
-
-
-SimpleSatProgram()
