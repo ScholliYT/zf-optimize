@@ -1,36 +1,54 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using ChartJs.Blazor.ChartJS.Common.Properties;
+using ChartJs.Blazor.ChartJS.PieChart;
+using ChartJs.Blazor.Charts;
+using ChartJs.Blazor.Util;
+using Microsoft.AspNetCore.Components;
 
 namespace webapp.Pages
 {
     public class IndexModel : ComponentBase
     {
-        public string DataFromAPI { get; private set; }
+        private protected PieConfig _config;
+        private protected ChartJsPieChart _pieChartJs;
 
-        public async void GetData()
+        protected override void OnInitialized()
         {
-            //We will make a GET request to a really cool website...
-
-            string baseUrl = "http://orbackend:5000/hello";        //The 'using' will help to prevent memory leaks.        //Create a new instance of HttpClient
-            using (HttpClient client = new HttpClient())
-
-            //Setting up the response...         
-
-            using (HttpResponseMessage res = await client.GetAsync(baseUrl))
-            using (HttpContent content = res.Content)
+            _config = new PieConfig
             {
-                string data = await content.ReadAsStringAsync();
-                if (data != null)
+                Options = new PieOptions
                 {
-                    Console.WriteLine(data);
-                    DataFromAPI = data;
-                    StateHasChanged();
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "Sample chart from Blazor"
+                    },
+                    Responsive = true,
+                    Animation = new ArcAnimation
+                    {
+                        AnimateRotate = true,
+                        AnimateScale = true
+                    }
                 }
-            }
+            };
+
+            _config.Data.Labels.AddRange(new[] {"A", "B", "C", "D"});
+
+            var pieSet = new PieDataset
+            {
+                BackgroundColor = new[]
+                {
+                    ColorUtil.RandomColorString(), ColorUtil.RandomColorString(), ColorUtil.RandomColorString(),
+                    ColorUtil.RandomColorString()
+                },
+                BorderWidth = 0,
+                HoverBackgroundColor = ColorUtil.RandomColorString(),
+                HoverBorderColor = ColorUtil.RandomColorString(),
+                HoverBorderWidth = 1,
+                BorderColor = "#ffffff"
+            };
+
+            pieSet.Data.AddRange(new double[] {4, 5, 6, 7});
+            _config.Data.Datasets.Add(pieSet);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data.Entities;
@@ -24,7 +22,7 @@ namespace webapp.Data.Services
         public async Task<Order> GetOrderAsync(int id)
         {
             return await _context.Orders
-              .FirstOrDefaultAsync(i => i.Id == id);
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Order> CreateOrderAsync(Order Order)

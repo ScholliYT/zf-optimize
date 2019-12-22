@@ -8,60 +8,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ZF Smashboard</title>
-    <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <base href="~/"/>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
+<app>
+    <component type="typeof(App)" render-mode="ServerPrerendered"/>
+</app>
 
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="#">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/ZF_logo_STD_Blue_3CC.svg/480px-ZF_logo_STD_Blue_3CC.svg.png">
-            </a>
+<div id="blazor-error-ui">
+    <environment include="Staging,Production">
+        An error has occurred. This application may no longer respond until reloaded.
+    </environment>
+    <environment include="Development">
+        An unhandled exception has occurred. See browser dev tools for details.
+    </environment>
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
 
-            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
+<script src="_framework/blazor.server.js"></script>
 
-        <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item">Dashboard</a>
-                <a class="navbar-item">Krasser ZF Kram</a>
-            </div>
 
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-primary"><strong>Registrieren</strong></a>
-                        <a class="button is-light">Anmelden</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-    <app>
-        <component type="typeof(App)" render-mode="ServerPrerendered" />
-    </app>
+<!-- Reference the included moment.js javascript file. -->
+<script src="_content/ChartJs.Blazor/moment-with-locales.min.js" type="text/javascript" language="javascript"></script>
 
-    <div id="blazor-error-ui">
-        <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
-        </environment>
-        <environment include="Development">
-            An unhandled exception has occurred. See browser dev tools for details.
-        </environment>
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
+<!-- Reference the included ChartJs javascript file. -->
+<script src="_content/ChartJs.Blazor/Chart.min.js" type="text/javascript" language="javascript"></script>
 
-    <script src="_framework/blazor.server.js"></script>
+<!-- This is the glue between the C# code and the ChartJs charts -->
+<script src="_content/ChartJs.Blazor/ChartJsBlazorInterop.js" type="text/javascript" language="javascript"></script>
+
+<!-- Some styling -->
+<link rel="stylesheet" href="_content/ChartJs.Blazor/ChartJSBlazor.css"/>
 </body>
 </html>
