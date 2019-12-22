@@ -44,7 +44,6 @@ namespace webapp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSyncfusionBlazor();
         }
 
