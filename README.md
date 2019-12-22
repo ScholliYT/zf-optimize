@@ -10,7 +10,8 @@ Start all containers:
 Delete all containers:  
 `docker-compose down --rmi local`
 
-Find the webapp at: https://localhost:PORT_ASSIGNED_BY_DOCKER/. Check PORT_ASSIGNED_BY_DOCKER with `docker ps`.
+Find the __WebApp__ at: https://localhost:443/.  
+Find the __Swagger__(orbackend) docs at: http://localhost:5000/.
 
 
 ## Tech-Stack
