@@ -1,0 +1,41 @@
+﻿@page "/"
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.PieChart
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.Util
+@inherits IndexModel
+
+<div class="columns">
+    <div class="column">
+    </div>
+
+    <div class="column is-one-third">
+        <div class="box">
+            <canvas id="chart-1">
+                <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
+            </canvas>
+        </div>
+
+        <div class="box">
+            <p class="is-size-1 has-text-centered">4.5 Mio. €</p>
+            <p class="is-size-5 has-text-centered">Umsatz</p>
+        </div>
+    </div>
+
+    <div class="column is-one-third">
+        <div class="box">
+            <p class="is-size-1 has-text-centered">12.345</p>
+            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
+        </div>
+
+        <div class="box">
+            <canvas id="chart-2">
+                <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
+            </canvas>
+        </div>
+    </div>
+
+    <div class="column">
+
+    </div>
+</div>

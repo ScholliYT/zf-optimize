@@ -1,0 +1,27 @@
+﻿<div class="navbar-end">
+    <div class="navbar-item">
+        <div class="buttons">
+            <AuthorizeView>
+                <Authorized>
+                    <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+                    <form method="post" action="Identity/Account/LogOut">
+                        <button type="submit" class="button is-primary">Log out</button>
+                    </form>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="button is-primary" href="Identity/Account/Register">Register</a>
+                    <a class="button is-light" href="Identity/Account/Login">Log in</a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</div>
+
+@*<div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                <a class="button is-primary"><strong>Registrieren</strong></a>
+                <a class="button is-light">Anmelden</a>
+            </div>
+        </div>
+    </div>*@
