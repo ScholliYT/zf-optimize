@@ -1,10 +1,35 @@
 ﻿@page "/"
 @inherits webapp.Pages.IndexModel
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="columns">
+    <div class="column">
 
-<p>@DataFromAPI</p>
+    </div>
 
-<EjsButton @onclick="GetData">Get Data from ORBackend</EjsButton>
+    <div class="column is-one-third">
+        <div class="box">
+            <canvas id="chart-1"></canvas>
+        </div>
+
+        <div class="box">
+            <p class="is-size-1 has-text-centered">4.5 Mio. €</p>
+            <p class="is-size-5 has-text-centered">Umsatz</p>
+        </div>
+    </div>
+
+    <div class="column is-one-third">
+        <div class="box">
+            <p class="is-size-1 has-text-centered">12.345</p>
+            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
+        </div>
+
+        <div class="box">
+            <canvas id="chart-2"></canvas>
+        </div>
+    </div>
+
+    <div class="column">
+
+    </div>
+</div>
