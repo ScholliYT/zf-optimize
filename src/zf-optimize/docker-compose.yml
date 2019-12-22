@@ -13,3 +13,6 @@ services:
     environment:
       SA_PASSWORD: "7zc7agecM6EmRmoiQmvYF5k3v"
       ACCEPT_EULA: "Y"
+  orbackend:
+    build:
+      context: ./orbackend
