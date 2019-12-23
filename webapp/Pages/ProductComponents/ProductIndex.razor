@@ -1,4 +1,4 @@
-﻿@page "/ovens"
+﻿@page "/products"
 
 <nav class="panel">
     <div class="panel-heading">
@@ -7,7 +7,7 @@
                 <h4>Öfen</h4>
             </div>
             <div class="column" style="display: inline-table;">
-                <button class="button level-right" @onclick="() => AddOven()">
+                <button class="button level-right" @onclick="AddProduct">
                     <span class="icon">
                         <i class="fas fa-plus"></i>
                     </span>
@@ -21,17 +21,17 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Anzahl Formen</th>
-                    <th>Wartungsdauer</th>
+                    <th>Name</th>
+                    <th>Preis</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var oven in Ovens)
+                @foreach (var product in Products)
                 {
                     <tr>
-                        <td>@oven.Id</td>
-                        <td>@oven.CastingCellAmount</td>
-                        <td>@oven.ChangeDuration.ToString()</td>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Price &euro;</td>
                     </tr>
                 }
             </tbody>
