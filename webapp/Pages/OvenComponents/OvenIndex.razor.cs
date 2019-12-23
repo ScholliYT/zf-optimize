@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using webapp.Data.Services;
 
-namespace webapp.Pages.Oven
+namespace webapp.Pages.OvenComponents
 {
-    public class OvenIndexModel : ComponentBase
+    public partial class OvenIndex : ComponentBase
     {
         [Inject] public NavigationManager NavigationManager { get; set; }
         [Inject] public OvenService OvenService { get; set; }

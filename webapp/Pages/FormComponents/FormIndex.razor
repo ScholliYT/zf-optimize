@@ -1,0 +1,64 @@
+﻿@page "/forms"
+<div class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column">
+                <h4>Formen</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="AddRandomForm">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Form zufällig hinzufügen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        @if (FormList == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Actions</th>
+                        <th>ActionsMax</th>
+                        <th>CastingCells</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var form in FormList)
+                    {
+                        <tr>
+                            <td>@form.Id</td>
+                            <td>@form.Actions</td>
+                            <td>@form.ActionsMax</td>
+                            <td>@form.CastingCells</td>
+                            <td>
+                                <button class="button is-small" @onclick="() => EditForm(form.Id)">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                    <span>Bearbeiten</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button is-small is-danger" @onclick="() => DeleteForm(form)">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Löschen</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>

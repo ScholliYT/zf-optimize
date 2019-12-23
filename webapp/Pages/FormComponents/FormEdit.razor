@@ -1,0 +1,53 @@
+﻿@page "/form"
+@page "/form/{Id:int}"
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4>Form</h4>
+    </div>
+    <div class="panel-block">
+
+        @if (LoadFailed)
+        {
+            <h2>Entschuldigung, diese Seite konnte aufgrund eines Fehlers nicht geladen werden.</h2>
+        }
+        else if (NotFound)
+        {
+            <h2>Entschuldigung, die Form konnte nicht gefunden werden.</h2>
+        }
+        else if (Form == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+                <h3>@(CreationMode ? "Eintrag hinzufügen" : "Eintrag bearbeiten")</h3>
+                <EditForm Model="@Form" OnValidSubmit="@Save" Class="container is-fluid">
+                    <DataAnnotationsValidator />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="field">
+                        <label class="label" for="Actions">Actions:</label>
+                        <div class="control">
+                            <InputNumber Class="input" @bind-Value="@Form.Actions" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="ActionsMax">ActionsMax:</label>
+                        <div class="control">
+                            <InputNumber Class="input" @bind-Value="@Form.ActionsMax" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="CastingCells">CastingCells:</label>
+                        <div class="control">
+                            <InputNumber Class="input" @bind-Value="@Form.CastingCells" />
+                        </div>
+                    </div>
+
+                    <button class="button" type="submit">@(CreationMode ? "Hinzufügen" : "Ändern")</button>
+                </EditForm>
+        }
+    </div>
+</div>
+<BackButton></BackButton>
