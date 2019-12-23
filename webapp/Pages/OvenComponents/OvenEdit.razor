@@ -1,0 +1,63 @@
+﻿@page "/oven"
+@page "/oven/{Id:int}"
+
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4>Form</h4>
+    </div>
+    <div class="panel-block">
+
+        @if (LoadFailed)
+        {
+            <h2>Entschuldigung, diese Seite konnte aufgrund eines Fehlers nicht geladen werden.</h2>
+        }
+        else if (NotFound)
+        {
+            <h2>Entschuldigung, der Ofen konnte nicht gefunden werden.</h2>
+        }
+        else if (Oven == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+            <h3>@(CreationMode ? "Ofen hinzufügen" : "Ofen bearbeiten")</h3>
+            <EditForm Model="@Oven" OnValidSubmit="@Save" Class="container is-fluid">
+                <DataAnnotationsValidator />
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="field">
+                    <label class="label" for="ChangeDuration">ChangeDuration:</label>
+                    <div class="control">
+                        <InputText Class="input" @bind-Value="@TimeProxy" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="CastingCellAmount">CastingCellAmount:</label>
+                    <div class="control">
+                        <InputNumber Class="input" @bind-Value="@Oven.CastingCellAmount" />
+                    </div>
+                </div>
+
+                <button class="button" type="submit">@(CreationMode ? "Hinzufügen" : "Ändern")</button>
+            </EditForm>
+        }
+    </div>
+</div>
+<BackButton></BackButton>
+
+@functions
+{
+    string TimeProxy { get => Oven.ChangeDuration.ToString();
+        set {
+            if(TimeSpan.TryParse(value, out var t))
+            {
+                Oven.ChangeDuration = t;
+            } else
+            {
+                Oven.ChangeDuration = default; // reset
+            }
+        }
+    }
+}

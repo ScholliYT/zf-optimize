@@ -1,0 +1,54 @@
+﻿@page "/ovens"
+
+<nav class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h4>Öfen</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="() => AddOven()">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Ofen hinzufügen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Anzahl Formen</th>
+                    <th>Wartungsdauer</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var oven in Ovens)
+                {
+                    <tr>
+                        <td>@oven.Id</td>
+                        <td>@oven.CastingCellAmount</td>
+                        <td>@oven.ChangeDurationDisplay</td>
+                        <td>
+                            <button class="button is-small" @onclick="() => EditOven(oven.Id)">
+                                <span class="icon"><i class="fas fa-edit"></i></span>
+                                <span>Bearbeiten</span>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="button is-small is-danger" @onclick="() => DeleteOven(oven)">
+                                <span class="icon"><i class="fas fa-trash"></i></span>
+                                <span>Löschen</span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</nav>

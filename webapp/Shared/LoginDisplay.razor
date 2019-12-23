@@ -3,7 +3,7 @@
         <div class="buttons">
             <AuthorizeView>
                 <Authorized>
-                    <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+                    <a class="button is-rounded" href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
                     <form method="post" action="Identity/Account/LogOut">
                         <button type="submit" class="button is-primary">Log out</button>
                     </form>

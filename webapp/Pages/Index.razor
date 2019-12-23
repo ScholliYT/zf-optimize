@@ -11,27 +11,23 @@
 
     <div class="column is-one-third">
         <div class="box">
-            <canvas id="chart-1">
-                <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
-            </canvas>
+            <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
         </div>
 
         <div class="box">
-            <p class="is-size-1 has-text-centered">4.5 Mio. €</p>
+            <p class="is-size-1 has-text-centered">@Math.Round(Task.Run(Umsatz).GetAwaiter().GetResult(), 2) €</p>
             <p class="is-size-5 has-text-centered">Umsatz</p>
         </div>
     </div>
 
     <div class="column is-one-third">
         <div class="box">
-            <p class="is-size-1 has-text-centered">12.345</p>
-            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
+            <ChartJs.Blazor.Charts.ChartJsBarChart @ref="_barChart" Config="@_barChartConfig" Width="600" Height="300" />
         </div>
 
         <div class="box">
-            <canvas id="chart-2">
-                <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
-            </canvas>
+            <p class="is-size-1 has-text-centered">@Task.Run(GesamtMenge).GetAwaiter().GetResult()</p>
+            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
         </div>
     </div>
 

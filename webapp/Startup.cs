@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using webapp.Areas.Identity;
 using webapp.Data;
 using System;
-using webapp.Data.Services;
+using webapp.Data.Entities;
 
 namespace webapp
 {
@@ -52,7 +52,6 @@ namespace webapp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddScoped<FormService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

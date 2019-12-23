@@ -1,0 +1,40 @@
+﻿@page "/products"
+
+<nav class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h4>Produkte</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="AddProduct">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Ofen hinzufügen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Preis</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Products)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.Price &euro;</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</nav>
