@@ -22,14 +22,12 @@
 
     <div class="column is-one-third">
         <div class="box">
-            <p class="is-size-1 has-text-centered">12.345</p>
-            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
+            <ChartJs.Blazor.Charts.ChartJsBarChart @ref="_barChart" Config="@_barChartConfig" Width="600" Height="300" />
         </div>
 
         <div class="box">
-            <canvas id="chart-2">
-                <ChartJsPieChart @ref="_pieChartJs" Config="@_config" Width="600" Height="300" />
-            </canvas>
+            <p class="is-size-1 has-text-centered">12.345</p>
+            <p class="is-size-5 has-text-centered">Gesamtmenge</p>
         </div>
     </div>
 
