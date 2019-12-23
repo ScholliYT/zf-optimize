@@ -3,6 +3,7 @@
 
 <h1>Formen</h1>
 
+<button @onclick="AddRandomForm">Add Random Form</button>
 @if (Forms == null)
 {
     <p><em>Lade...</em></p>
@@ -16,6 +17,8 @@ else
                 <th>Actions</th>
                 <th>ActionsMax</th>
                 <th>CastingCells</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +29,8 @@ else
                     <td>@form.Actions</td>
                     <td>@form.ActionsMax</td>
                     <td>@form.CastingCells</td>
+                    <td><button @onclick="() => EditForm(form.Id)">Edit</button></td>
+                    <td><button @onclick="() => DeleteForm(form)">Delete</button></td>
                 </tr>
             }
         </tbody>
