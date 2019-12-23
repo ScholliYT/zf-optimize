@@ -12,7 +12,7 @@ namespace webapp.Data.Entities
         [Range(0, int.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
         public int ActionsMax { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
+        [Range(0, float.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
         public float CastingCells { get; set; }
 
     }
