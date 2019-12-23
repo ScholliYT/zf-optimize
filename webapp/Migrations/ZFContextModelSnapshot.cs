@@ -102,6 +102,9 @@ namespace webapp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");

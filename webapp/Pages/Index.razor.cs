@@ -1,4 +1,5 @@
-﻿using ChartJs.Blazor.ChartJS.BarChart;
+﻿using System;
+using ChartJs.Blazor.ChartJS.BarChart;
 using ChartJs.Blazor.ChartJS.BarChart.Axes;
 using ChartJs.Blazor.ChartJS.Common.Axes;
 using ChartJs.Blazor.ChartJS.Common.Axes.Ticks;
@@ -10,6 +11,7 @@ using ChartJs.Blazor.Util;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using webapp.Data;
@@ -66,10 +68,10 @@ namespace webapp.Pages
             pieSet.Data.AddRange(new double[] { 4, 5, 6, 7 });
             _config.Data.Datasets.Add(pieSet);
 
-            await InitBarChartAsync();
+            InitBarChart();
         }
 
-        private async Task InitBarChartAsync()
+        private void InitBarChart()
         {
             _barChartConfig = new BarConfig
             {
@@ -99,11 +101,11 @@ namespace webapp.Pages
                 }
             };
 
-            var orders = await _zfContext.OrderProducts.GroupBy(o => o.Order)
-                .Select(g => new { g.Key.Date.Month, ProductsCount = g.Sum(op => op.Amount)})
-                .ToListAsync();
+            var orders = _zfContext.OrderProducts.Where(o => o.Order.Date.Year == DateTime.Now.Year)
+                .Include(o => o.Order).AsEnumerable().GroupBy(o => o.Order)
+                .Select(g => new { g.Key.Date.Month, ProductsCount = g.Sum(op => op.Amount) }).ToList();
 
-            _barChartConfig.Data.Labels.AddRange(orders.Select(o => o.Month.ToString()).ToList());
+            _barChartConfig.Data.Labels.AddRange(orders.Select(o => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(o.Month)).ToList());
 
             _barDataSet = new BarDataset<Int32Wrapper>
             {
@@ -118,6 +120,17 @@ namespace webapp.Pages
 
             _barDataSet.AddRange(orders.Select(o => o.ProductsCount).ToList().Wrap());
             _barChartConfig.Data.Datasets.Add(_barDataSet);
+        }
+        private protected async Task<int> GesamtMenge()
+        {
+            return await _zfContext.OrderProducts.Where(op => op.Order.Date.Year == DateTime.Now.Year)
+                .SumAsync(x => x.Amount);
+        }
+
+        private protected async Task<decimal> Umsatz()
+        {
+            return await _zfContext.OrderProducts.Where(op => op.Order.Date.Year == DateTime.Now.Year)
+                .Include(x => x.Product).Select(x => x.Amount * x.Product.Price).SumAsync();
         }
     }
 }
