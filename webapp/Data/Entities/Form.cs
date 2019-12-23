@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace webapp.Data.Entities
 {
@@ -14,6 +15,22 @@ namespace webapp.Data.Entities
 
         [Range(0, float.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
         public float CastingCells { get; set; }
+
+        public double Wear
+        {
+            get
+            {
+                return (double)Actions / ActionsMax;
+            }
+        }
+
+        public string WearDisplay
+        {
+            get
+            {
+                return string.Format("{0:0.00}%", Wear*100d);
+            }
+        }
 
     }
 }

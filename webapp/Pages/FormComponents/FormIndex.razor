@@ -1,4 +1,4 @@
-﻿@page "/forms"
+@page "/forms"
 <div class="panel">
     <div class="panel-heading">
         <div class="columns">
@@ -29,6 +29,7 @@
                         <th>Id</th>
                         <th>Actions</th>
                         <th>ActionsMax</th>
+                        <th>Wear</th>
                         <th>CastingCells</th>
                         <th></th>
                         <th></th>
@@ -41,6 +42,7 @@
                             <td>@form.Id</td>
                             <td>@form.Actions</td>
                             <td>@form.ActionsMax</td>
+                            <td>@form.WearDisplay</td>
                             <td>@form.CastingCells</td>
                             <td>
                                 <button class="button is-small" @onclick="() => EditForm(form.Id)">

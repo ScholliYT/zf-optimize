@@ -13,7 +13,7 @@ namespace webapp.Pages.FormComponents
         [Inject] public ZFContext _zfContext { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
 
-        public List<Data.Entities.Form> FormList { get; set; }
+        public List<Form> FormList { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -41,6 +41,11 @@ namespace webapp.Pages.FormComponents
             _zfContext.Forms.Add(form);
             await _zfContext.SaveChangesAsync();
             await LoadForms();
+        }
+
+        public void AddForm()
+        {
+            NavigationManager.NavigateTo("/form");
         }
 
         public void EditForm(int id)
