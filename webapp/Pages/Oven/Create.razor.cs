@@ -8,7 +8,7 @@ using webapp.Data;
 
 namespace webapp.Pages.Oven
 {
-    public class CreateOvenModel : ComponentBase, IBackButton
+    public class CreateOvenModel : ComponentBase
     {
         [Inject] public IJSRuntime JSRuntime { get; set; }
 
