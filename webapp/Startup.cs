@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using webapp.Areas.Identity;
 using webapp.Data;
 using System;
+using webapp.Data.Entities;
 using webapp.Data.Services;
 
 namespace webapp
@@ -53,6 +54,9 @@ namespace webapp
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddScoped<FormService>();
+            services.AddScoped<OvenService>();
+            services.AddScoped<ProductService>();
+            services.AddScoped<OrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
