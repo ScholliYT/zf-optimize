@@ -21,7 +21,7 @@
         }
         else
         {
-                <h3>@(CreationMode ? "Eintrag hinzufügen" : "Eintrag bearbeiten")</h3>
+                <h3>@(CreationMode ? "Form hinzufügen" : "Form bearbeiten")</h3>
                 <EditForm Model="@Form" OnValidSubmit="@Save" Class="container is-fluid">
                     <DataAnnotationsValidator />
                     <div asp-validation-summary="All" class="text-danger"></div>

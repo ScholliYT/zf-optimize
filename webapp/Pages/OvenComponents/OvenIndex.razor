@@ -23,6 +23,8 @@
                     <th>ID</th>
                     <th>Anzahl Formen</th>
                     <th>Wartungsdauer</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -31,7 +33,19 @@
                     <tr>
                         <td>@oven.Id</td>
                         <td>@oven.CastingCellAmount</td>
-                        <td>@oven.ChangeDuration.ToString()</td>
+                        <td>@oven.ChangeDurationDisplay</td>
+                        <td>
+                            <button class="button is-small" @onclick="() => EditOven(oven.Id)">
+                                <span class="icon"><i class="fas fa-edit"></i></span>
+                                <span>Bearbeiten</span>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="button is-small is-danger" @onclick="() => DeleteOven(oven)">
+                                <span class="icon"><i class="fas fa-trash"></i></span>
+                                <span>Löschen</span>
+                            </button>
+                        </td>
                     </tr>
                 }
             </tbody>
