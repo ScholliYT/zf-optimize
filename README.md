@@ -1,6 +1,6 @@
 # zf-optimize
-[![Build Status Webapp](https://github.com/ScholliYT/zf-optimize/workflows/Publish-Dockerimage-Webapp/badge.svg)
-[![Build Status Orbackend](https://github.com/ScholliYT/zf-optimize/workflows/Publish-Dockerimage-Orbackend/badge.svg)
+![Build Status Webapp](https://github.com/ScholliYT/zf-optimize/workflows/Publish-Dockerimage-Webapp/badge.svg)
+![Build Status Orbackend](https://github.com/ScholliYT/zf-optimize/workflows/Publish-Dockerimage-Orbackend/badge.svg)
 
 https://www.it-talents.de/foerderung/code-competition/zf-code-competition-11-2019
 
