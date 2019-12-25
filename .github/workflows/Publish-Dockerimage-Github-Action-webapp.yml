@@ -1,4 +1,4 @@
-name: Publish-Docker-Github-Action
+name: Publish-Dockerimage-Webapp
 on: [push]
 jobs:
   build:
