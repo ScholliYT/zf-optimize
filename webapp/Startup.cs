@@ -40,11 +40,11 @@ namespace webapp
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("DefaultConnection")));
+                        Configuration.GetConnectionString("ApplicationDB")));
 
                 services.AddDbContext<ZFContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("DefaultConnection")));
+                        Configuration.GetConnectionString("ZFContext")));
             }
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
