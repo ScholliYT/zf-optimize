@@ -17,7 +17,7 @@ namespace webapp.Pages.ProductComponents
 
         private protected void AddProduct()
         {
-            NavigationManager.NavigateTo("/products/add");
+            NavigationManager.NavigateTo("/product");
         }
     }
 }
