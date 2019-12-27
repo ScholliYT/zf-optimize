@@ -1,4 +1,4 @@
-﻿@page "/product"
+@page "/product"
 @page "/product/{Id:int}"
 
 
@@ -25,7 +25,7 @@
             <h3>@(CreationMode ? "Produkt hinzufügen" : "Produkt bearbeiten")</h3>
             <EditForm Model="@Product" OnValidSubmit="@Save" Class="container is-fluid">
                 <DataAnnotationsValidator />
-                <div asp-validation-summary="All" class="text-danger"></div>
+                <ValidationSummary />
 
                 <div class="field">
                     <label class="label" for="Name">Name:</label>

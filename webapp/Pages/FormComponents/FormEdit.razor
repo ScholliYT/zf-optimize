@@ -24,7 +24,7 @@
                 <h3>@(CreationMode ? "Form hinzufügen" : "Form bearbeiten")</h3>
                 <EditForm Model="@Form" OnValidSubmit="@Save" Class="container is-fluid">
                     <DataAnnotationsValidator />
-                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <ValidationSummary />
 
                     <div class="field">
                         <label class="label" for="Actions">Actions:</label>
@@ -41,7 +41,7 @@
                     <div class="field">
                         <label class="label" for="CastingCells">CastingCells:</label>
                         <div class="control">
-                            <InputNumber Class="input" @bind-Value="@Form.CastingCells"/>
+                            <InputNumber Class="input" @bind-Value="@Form.CastingCells" />
                         </div>
                     </div>
 
