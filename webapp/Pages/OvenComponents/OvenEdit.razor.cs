@@ -52,10 +52,5 @@ namespace webapp.Pages.OvenComponents
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/ovens");
         }
-
-        public void GoBack()
-        {
-            JSRuntime.InvokeAsync<string>("window.history.go", -1);
-        }
     }
 }
