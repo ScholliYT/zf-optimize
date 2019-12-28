@@ -52,11 +52,11 @@ namespace webapp
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("ApplicationDB")));
+                        Configuration.GetConnectionString("ApplicationDB")), ServiceLifetime.Transient);
 
                 services.AddDbContext<ZFContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("ZFContext")));
+                        Configuration.GetConnectionString("ZFContext")), ServiceLifetime.Transient);
             }
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
