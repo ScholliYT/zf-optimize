@@ -35,6 +35,26 @@ namespace webapp.Pages.ProductComponents
             NavigationManager.NavigateTo("/product");
         }
 
+        public async Task AddRandomProduct()
+        {
+            try
+            {
+                var random = new Random();
+                var product = new Product()
+                {
+                    Name = $"Produkt Nr. {random.Next(0, int.MaxValue)}",
+                    Price = (decimal)(Math.Round(random.NextDouble() * 10f, 2)),
+                };
+
+                _zfContext.Products.Add(product);
+                await _zfContext.SaveChangesAsync();
+                await LoadProducts();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim erstellen eines neuen Produkts.");
+            }
+        }
 
         public void EditProduct(int id)
         {
