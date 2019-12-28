@@ -1,0 +1,77 @@
+// INPUT
+{
+  "forms": [
+    {
+      "id": 0,
+      "required_amount": 100,
+      "castingcell_demand": 1.2
+    },
+    {
+      "id": 1,
+      "required_amount": 50,
+      "castingcell_demand": 0.8
+    },
+    {
+      "id": 2,
+      "required_amount": 10,
+      "castingcell_demand": 1.8
+    }
+  ],
+  "ovens": [
+    {
+      "id": 0,
+      "size": 2,
+      "changeduration_sec": 50
+    },
+    {
+      "id": 1,
+      "size": 3,
+      "changeduration_sec": 70
+    }
+  ]
+}
+
+
+// OUTPUT
+[
+    {
+        "name": "Assignment 1",
+        "used": true
+        "ticks": 12,
+        "assigments": [
+            -1, // Form 0 not used
+            -1, // From 1 not used
+            0, // Form 2 in oven 0
+            2, // Form 3 in oven 2
+            1, // Form 4 in oven 1
+            0 // Form 5 in oven 0
+        ]
+    },
+    {
+      "name": "Assignment 2",
+        "used": true
+        "ticks": 2,
+        "assigments": [
+            0, // Form 0 not used
+            0, // From 1 not used
+            1, // Form 2 in oven 0
+            1, // Form 3 in oven 2
+            2, // Form 4 in oven 1
+            2 // Form 5 in oven 0
+        ]
+    },
+    {
+      "name": "Assignment 3",
+        "used": false
+        "ticks": 0,
+        "assigments": [
+            0, // Form 0 not used
+            0, // From 1 not used
+            0, // Form 2 not used
+            0, // Form 3 not used
+            0, // Form 4 not used
+            0  // Form 5 not used
+        ]
+    }
+    ...
+]
