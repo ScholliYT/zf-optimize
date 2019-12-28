@@ -10,6 +10,7 @@ using webapp.Areas.Identity;
 using webapp.Data;
 using System;
 using webapp.Data.Entities;
+using Blazored.Toast;
 
 namespace webapp
 {
@@ -61,6 +62,7 @@ namespace webapp
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazoredToast();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
         }
 
