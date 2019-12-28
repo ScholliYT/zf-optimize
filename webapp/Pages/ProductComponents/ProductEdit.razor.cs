@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace webapp.Pages.ProductComponents
     {
         [Inject] public ZFContext _zfContext { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
+
         [Parameter] public int? Id { get; set; }
 
         protected Product Product { get; private set; }
@@ -51,6 +54,7 @@ namespace webapp.Pages.ProductComponents
 
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/products");
+            ToastService.ShowSuccess($"Produkt {Product.Id} erstellt.");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using System;
@@ -10,9 +11,10 @@ namespace webapp.Pages.OvenComponents
 {
     public partial class OvenEdit : ComponentBase
     {
-        [Inject] public IJSRuntime JSRuntime { get; set; }
         [Inject] public ZFContext _zfContext { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
+
         [Parameter] public int? Id { get; set; }
 
         protected Oven Oven { get; private set; }
@@ -51,6 +53,7 @@ namespace webapp.Pages.OvenComponents
 
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/ovens");
+            ToastService.ShowSuccess($"Ofen {Oven.Id} erstellt.");
         }
     }
 }

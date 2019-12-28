@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data;
@@ -13,6 +14,8 @@ namespace webapp.Pages.ProductComponents
     {
         [Inject] private protected ZFContext _zfContext { get; set; }
         [Inject] private protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
+
 
         private protected List<Product> Products;
 
@@ -40,9 +43,16 @@ namespace webapp.Pages.ProductComponents
 
         public async Task DeleteProduct(Product product)
         {
-            _zfContext.Products.Remove(product);
-            await _zfContext.SaveChangesAsync();
-            await LoadProducts();
+            try
+            {
+                _zfContext.Products.Remove(product);
+                await _zfContext.SaveChangesAsync();
+                await LoadProducts();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim Löschen von Produkt {product.Id}.");
+            }
         }
     }
 }

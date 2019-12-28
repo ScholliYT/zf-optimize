@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data;
@@ -11,7 +12,9 @@ namespace webapp.Pages.FormComponents
     {
         [Inject] public ZFContext _zfContext { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
         [Parameter] public int? Id { get; set; }
+
 
         protected Form Form { get; private set; }
         protected bool LoadFailed { get; private set; }
@@ -48,7 +51,9 @@ namespace webapp.Pages.FormComponents
             }
 
             await _zfContext.SaveChangesAsync();
+
             NavigationManager.NavigateTo("/forms");
+            ToastService.ShowSuccess($"Form {Form.Id} erstellt.");
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data;
@@ -11,6 +13,8 @@ namespace webapp.Pages.OvenComponents
     {
         [Inject] public ZFContext _zfContext { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
+
 
         public List<Oven> Ovens = new List<Oven>();
 
@@ -38,9 +42,16 @@ namespace webapp.Pages.OvenComponents
 
         public async Task DeleteOven(Oven oven)
         {
-            _zfContext.Ovens.Remove(oven);
-            await _zfContext.SaveChangesAsync();
-            await LoadOvens();
+            try
+            {
+                _zfContext.Ovens.Remove(oven);
+                await _zfContext.SaveChangesAsync();
+                await LoadOvens();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim Löschen von Ofen {oven.Id}.");
+            }
         }
     }
 }
