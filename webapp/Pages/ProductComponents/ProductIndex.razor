@@ -17,24 +17,45 @@
         </div>
     </div>
     <div class="panel-block">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Preis</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Products)
-                {
+        @if (Products == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+            <table class="table is-striped is-hoverable">
+                <thead>
                     <tr>
-                        <td>@product.Id</td>
-                        <td>@product.Name</td>
-                        <td>@product.Price &euro;</td>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Preis</th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var product in Products)
+                    {
+                        <tr>
+                            <td>@product.Id</td>
+                            <td>@product.Name</td>
+                            <td>@product.Price &euro;</td>
+                            <td>
+                                <button class="button is-small" @onclick="() => EditProduct(product.Id)">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                    <span>Bearbeiten</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button is-small is-danger" @onclick="() => DeleteProduct(product)">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Löschen</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
 </nav>
