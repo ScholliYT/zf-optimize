@@ -68,10 +68,10 @@ namespace webapp.Pages
             pieSet.Data.AddRange(new double[] { 4, 5, 6, 7 });
             _config.Data.Datasets.Add(pieSet);
 
-            InitBarChart();
+            await InitBarChart();
         }
 
-        private void InitBarChart()
+        private async Task InitBarChart()
         {
             _barChartConfig = new BarConfig
             {
@@ -105,7 +105,9 @@ namespace webapp.Pages
                 .Include(o => o.Order).AsEnumerable().GroupBy(o => o.Order)
                 .Select(g => new { g.Key.Date.Month, ProductsCount = g.Sum(op => op.Amount) }).ToList();
 
-            _barChartConfig.Data.Labels.AddRange(orders.Select(o => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(o.Month)).ToList());
+            await Task.Run(() =>
+                _barChartConfig.Data.Labels.AddRange(orders
+                    .Select(o => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(o.Month)).ToList()));
 
             _barDataSet = new BarDataset<Int32Wrapper>
             {

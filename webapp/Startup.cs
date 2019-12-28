@@ -30,32 +30,33 @@ namespace webapp
             if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == null) // Using no Docker i.e. IIS Express
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                   options.UseSqlServer(
-                       Configuration.GetConnectionString("DefaultConnection")));
-
+                        options.UseSqlServer(
+                            @"Server=(localdb)\mssqllocaldb;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true"),
+                    ServiceLifetime.Transient);
                 services.AddDbContext<ZFContext>(options =>
-                    options.UseSqlServer(
-                        Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true"),
+                    ServiceLifetime.Transient);
             }
             else if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Development")
             {
-                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
-                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
+                //Server=(localdb)\\mssqllocaldb;Database=MvcMovieContext-2;Trusted_Connection=True;MultipleActiveResultSets=true
+                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true";
+                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true";
 
                 services.AddDbContext<ApplicationDbContext>(
-                    options => options.UseSqlServer(connectionAuthDb));
+                    options => options.UseSqlServer(connectionAuthDb), ServiceLifetime.Transient);
                 services.AddDbContext<ZFContext>(
-                    options => options.UseSqlServer(connectionZFDb));
+                    options => options.UseSqlServer(connectionZFDb), ServiceLifetime.Transient);
             }
             else if ((Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Production"))
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("ApplicationDB")));
+                        Configuration.GetConnectionString("ApplicationDB")), ServiceLifetime.Transient);
 
                 services.AddDbContext<ZFContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("ZFContext")));
+                        Configuration.GetConnectionString("ZFContext")), ServiceLifetime.Transient);
             }
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
