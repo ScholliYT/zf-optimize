@@ -1,0 +1,48 @@
+@page "/product"
+@page "/product/{Id:int}"
+
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4>Produkt</h4>
+    </div>
+    <div class="panel-block">
+
+        @if (LoadFailed)
+        {
+            <h2>Entschuldigung, diese Seite konnte aufgrund eines Fehlers nicht geladen werden.</h2>
+        }
+        else if (NotFound)
+        {
+            <h2>Entschuldigung, das Produkt konnte nicht gefunden werden.</h2>
+        }
+        else if (Product == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+            <h3>@(CreationMode ? "Produkt hinzufügen" : "Produkt bearbeiten")</h3>
+            <EditForm Model="@Product" OnValidSubmit="@Save" Class="container is-fluid">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="field">
+                    <label class="label" for="Name">Name:</label>
+                    <div class="control">
+                        <InputText Class="input" @bind-Value="@Product.Name" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="Price">Preis:</label>
+                    <div class="control">
+                        <InputNumber Class="input" @bind-Value="@Product.Price" />
+                    </div>
+                </div>
+
+                <button class="button" type="submit">@(CreationMode ? "Hinzufügen" : "Ändern")</button>
+            </EditForm>
+        }
+    </div>
+</div>
+<BackButton></BackButton>

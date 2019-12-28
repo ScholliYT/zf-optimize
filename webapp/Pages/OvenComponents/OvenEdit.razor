@@ -4,7 +4,7 @@
 
 <div class="panel">
     <div class="panel-heading">
-        <h4>Form</h4>
+        <h4>Ofen</h4>
     </div>
     <div class="panel-block">
 
@@ -25,7 +25,7 @@
             <h3>@(CreationMode ? "Ofen hinzufügen" : "Ofen bearbeiten")</h3>
             <EditForm Model="@Oven" OnValidSubmit="@Save" Class="container is-fluid">
                 <DataAnnotationsValidator />
-                <div asp-validation-summary="All" class="text-danger"></div>
+                <ValidationSummary />
 
                 <div class="field">
                     <label class="label" for="ChangeDuration">ChangeDuration:</label>

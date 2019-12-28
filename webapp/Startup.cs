@@ -10,6 +10,7 @@ using webapp.Areas.Identity;
 using webapp.Data;
 using System;
 using webapp.Data.Entities;
+using Blazored.Toast;
 
 namespace webapp
 {
@@ -26,7 +27,17 @@ namespace webapp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Development")
+            if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == null) // Using no Docker i.e. IIS Express
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                   options.UseSqlServer(
+                       Configuration.GetConnectionString("DefaultConnection")));
+
+                services.AddDbContext<ZFContext>(options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Development")
             {
                 var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
                 var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;";
@@ -36,7 +47,7 @@ namespace webapp
                 services.AddDbContext<ZFContext>(
                     options => options.UseSqlServer(connectionZFDb));
             }
-            else
+            else if ((Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Production"))
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
@@ -51,6 +62,7 @@ namespace webapp
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazoredToast();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
         }
 
