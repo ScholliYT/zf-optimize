@@ -26,7 +26,7 @@ namespace webapp.Pages.OvenComponents
 
         private async Task LoadOvens()
         {
-            Ovens.AddRange(await _zfContext.Ovens.ToListAsync());
+            Ovens = await _zfContext.Ovens.ToListAsync();
             StateHasChanged();
         }
 
@@ -34,6 +34,28 @@ namespace webapp.Pages.OvenComponents
         {
             NavigationManager.NavigateTo("/oven");
         }
+
+        public async Task AddRandomOven()
+        {
+            try
+            {
+                var random = new Random();
+                var oven = new Oven()
+                {
+                    ChangeDuration = TimeSpan.FromSeconds(random.Next(1, 600)),
+                    CastingCellAmount = Math.Round(random.NextDouble() * 5d, 2)
+                };
+
+                _zfContext.Ovens.Add(oven);
+                await _zfContext.SaveChangesAsync();
+                await LoadOvens();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim erstellen eines neuen Produkts.");
+            }
+        }
+
 
         public void EditOven(int id)
         {

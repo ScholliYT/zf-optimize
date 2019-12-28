@@ -9,7 +9,7 @@ namespace webapp.Data.Entities
 
         [Required]
         [Range(double.Epsilon, double.MaxValue)]
-        public int CastingCellAmount { get; set; }
+        public double CastingCellAmount { get; set; }
 
         [Required]
         public TimeSpan ChangeDuration { get; set; }

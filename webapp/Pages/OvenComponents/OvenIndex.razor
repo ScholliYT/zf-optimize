@@ -7,6 +7,14 @@
                 <h4>Öfen</h4>
             </div>
             <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="AddRandomOven">
+                    <span class="icon">
+                        <i class="fas fa-dice"></i>
+                    </span>
+                    <span>Ofen zufällig hinzufügen</span>
+                </button>
+            </div>
+            <div class="column" style="display: inline-table;">
                 <button class="button level-right" @onclick="() => AddOven()">
                     <span class="icon">
                         <i class="fas fa-plus"></i>
@@ -17,38 +25,45 @@
         </div>
     </div>
     <div class="panel-block">
-        <table class="table is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Anzahl Formen</th>
-                    <th>Wartungsdauer</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var oven in Ovens)
-                {
+        @if (Ovens == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+            <table class="table is-striped is-hoverable">
+                <thead>
                     <tr>
-                        <td>@oven.Id</td>
-                        <td>@oven.CastingCellAmount</td>
-                        <td>@oven.ChangeDurationDisplay</td>
-                        <td>
-                            <button class="button is-small" @onclick="() => EditOven(oven.Id)">
-                                <span class="icon"><i class="fas fa-edit"></i></span>
-                                <span>Bearbeiten</span>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="button is-small is-danger" @onclick="() => DeleteOven(oven)">
-                                <span class="icon"><i class="fas fa-trash"></i></span>
-                                <span>Löschen</span>
-                            </button>
-                        </td>
+                        <th>ID</th>
+                        <th>Anzahl Formen</th>
+                        <th>Wartungsdauer</th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var oven in Ovens)
+                    {
+                        <tr>
+                            <td>@oven.Id</td>
+                            <td>@oven.CastingCellAmount</td>
+                            <td>@oven.ChangeDurationDisplay</td>
+                            <td>
+                                <button class="button is-small" @onclick="() => EditOven(oven.Id)">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                    <span>Bearbeiten</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button is-small is-danger" @onclick="() => DeleteOven(oven)">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Löschen</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
 </nav>

@@ -80,8 +80,8 @@ namespace webapp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CastingCellAmount")
-                        .HasColumnType("int");
+                    b.Property<double>("CastingCellAmount")
+                        .HasColumnType("float");
 
                     b.Property<TimeSpan>("ChangeDuration")
                         .HasColumnType("time");
