@@ -68,7 +68,7 @@ namespace webapp.Pages
             pieSet.Data.AddRange(new double[] { 4, 5, 6, 7 });
             _config.Data.Datasets.Add(pieSet);
 
-            InitBarChart();
+            await Task.Run(InitBarChart);
         }
 
         private void InitBarChart()
