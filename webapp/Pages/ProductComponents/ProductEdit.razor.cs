@@ -54,7 +54,7 @@ namespace webapp.Pages.ProductComponents
 
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/products");
-            ToastService.ShowSuccess($"Produkt {Product.Id} erstellt.");
+            ToastService.ShowSuccess($"Produkt {Product.Id} {(CreationMode?"erstellt":"geändert")}.");
         }
     }
 }

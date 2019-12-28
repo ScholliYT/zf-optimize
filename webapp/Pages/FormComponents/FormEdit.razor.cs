@@ -53,7 +53,7 @@ namespace webapp.Pages.FormComponents
             await _zfContext.SaveChangesAsync();
 
             NavigationManager.NavigateTo("/forms");
-            ToastService.ShowSuccess($"Form {Form.Id} erstellt.");
+            ToastService.ShowSuccess($"Form {Form.Id} {(CreationMode ? "erstellt" : "geändert")}.");
         }
     }
 }

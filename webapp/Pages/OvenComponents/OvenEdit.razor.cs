@@ -53,7 +53,7 @@ namespace webapp.Pages.OvenComponents
 
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/ovens");
-            ToastService.ShowSuccess($"Ofen {Oven.Id} erstellt.");
+            ToastService.ShowSuccess($"Ofen {Oven.Id} {(CreationMode ? "erstellt" : "geändert")}.");
         }
     }
 }
