@@ -27,6 +27,9 @@
     <Compile Include="api\endpoints.py" />
     <Compile Include="api\__init__.py" />
     <Compile Include="runserver.py" />
+    <Compile Include="services\zfoptimizer.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="docker\Dockerfile" />

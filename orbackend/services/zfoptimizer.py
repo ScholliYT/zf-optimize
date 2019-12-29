@@ -1,19 +1,17 @@
 from ortools.sat.python import cp_model
-import numpy as np
 import math
 
-class ZF_Optmizer:
-    def __init__(self):
+
+class ZFOptimizer():
+    """description of class"""
+    def __init__(self, ovens, forms):
         # inputs
         #List of Ovens
-        self.ovens = [{"id": 0, "size": 20, "changeduration_sec": 50},
-                 {"id": 1, "size": 25, "changeduration_sec": 70}]
+        self.ovens = ovens
 
         #List of Forms - required_amount: Amount of Times this form must be used, castingcell_demand: Amount of space occupied by this form
         # Scale castingcell_demand and oven.size so that they are ints
-        self.forms = [{"id": 0,'required_amount':2, 'castingcell_demand':1},
-                 {"id": 1,'required_amount':3, 'castingcell_demand':12},
-                 {"id": 2,'required_amount':3, 'castingcell_demand':18}]
+        self.forms = forms
 
         self.form_sizes = list(map(lambda f: f['castingcell_demand'], self.forms))
         # TODO: ausrechnen lassen# sum(order_requirements) erstmal
@@ -44,7 +42,6 @@ class ZF_Optmizer:
 
             for o in range(len(self.ovens)):
                 self.model.Add(self.ovens[o]['size'] >= sum(form_used_in_oven[(f,o)] * self.form_sizes[f] for f in range(len(self.forms))))
-    
 
     # C2: Alle Produkte( = Formen) hergestellt ?
     def add_ct_all_produced(self):
@@ -101,12 +98,23 @@ class ZF_Optmizer:
         # TODO: Prüfen ob beim Wechsel einer Beleung der Ofen überhaupt veränder wird
         self.model.Minimize(sum([assignment['used'] for assignment in self.assignments]))
 
+        #self.model.Minimize(sum([assignment['ticks'] for assignment in self.assignments]))
+
         solver = cp_model.CpSolver() 
         status = solver.Solve(self.model)
         print("Status is: " + solver.StatusName(status))
 
         if status != cp_model.INFEASIBLE: 
+            print(solver.BestObjectiveBound())
+            output = []
             for idx, assignment in enumerate(self.assignments):
+                oa = {} # output assignment
+                oa = {
+                        "name": assignment['name'],
+                        "used": True if solver.Value(assignment['used']) else False,
+                        "ticks": solver.Value(assignment['ticks']),
+                        "assigments": [solver.Value(fa['oven']) for fa in assignment['form_assignments']]
+                }
                 print(assignment['name'])
                 print("   used: %s" % ("yes" if solver.Value(assignment['used']) else "no"))
                 print("   ticks: %i" % (solver.Value(assignment['ticks'])))
@@ -117,7 +125,7 @@ class ZF_Optmizer:
                     produced = solver.Value(form_assignment['produced'])
                     print("       From %i %s used %s" % (idx, "is" if used else "is not", f'in oven {oven} to produce {produced}' if used else ""))
 
-zf_optimizer = ZF_Optmizer()
-zf_optimizer.init_model()
-zf_optimizer.add_all_constrains()
-zf_optimizer.optimize()
+                if oa['used']:
+                    output.append(oa)
+            return output
+        return False
