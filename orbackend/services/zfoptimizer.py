@@ -1,6 +1,17 @@
 from ortools.sat.python import cp_model
 import math
 
+class ObjectivePrinter(cp_model.CpSolverSolutionCallback):
+    """Print intermediate solutions."""
+
+    def __init__(self):
+        cp_model.CpSolverSolutionCallback.__init__(self)
+        self.__solution_count = 0
+
+    def on_solution_callback(self):
+        print('Solution %i, time = %f s, objective = %i' %
+              (self.__solution_count, self.WallTime(), self.ObjectiveValue()))
+        self.__solution_count += 1
 
 class ZFOptimizer():
     """description of class"""
@@ -96,16 +107,18 @@ class ZFOptimizer():
         # Anzahl der Belegungen in denen etwas hergestellt wird minimieren - > Anzahl der Wechselungen der Belegung minimiern
         # TODO: Wechseldauer eines Ofens mit einbeziehen 
         # TODO: Prüfen ob beim Wechsel einer Beleung der Ofen überhaupt veränder wird
-        self.model.Minimize(sum([assignment['used'] for assignment in self.assignments]))
 
-        #self.model.Minimize(sum([assignment['ticks'] for assignment in self.assignments]))
+        self.model.Minimize(sum([assignment['ticks'] + assignment['used'] for assignment in self.assignments]))
+        #self.model.Minimize(sum([assignment['used'] for assignment in self.assignments]))
 
+
+        objective_printer = ObjectivePrinter()
         solver = cp_model.CpSolver() 
-        status = solver.Solve(self.model)
+        solver.parameters.max_time_in_seconds = 60 * 5 # TODO: make this configurable via api
+        status = solver.SolveWithSolutionCallback(self.model, objective_printer)
         print("Status is: " + solver.StatusName(status))
 
         if status != cp_model.INFEASIBLE: 
-            print(solver.BestObjectiveBound())
             output = []
             for idx, assignment in enumerate(self.assignments):
                 oa = {} # output assignment
@@ -127,5 +140,6 @@ class ZFOptimizer():
 
                 if oa['used']:
                     output.append(oa)
+            print(solver.ResponseStats())
             return output
         return False
