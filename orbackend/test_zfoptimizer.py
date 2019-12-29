@@ -21,6 +21,32 @@ class Test_ZFOptimizer(unittest.TestCase):
         # Verify
         self.assertEqual(len(solution), 2) # there should just be 2 assignments
 
+    def test_almost_same_amounts_revserse(self):
+        ovens = [{"id": 0, "size": 5, "changeduration_sec": 50}]
+
+        forms = [{"id": 0, "required_amount": 13, "castingcell_demand": 1},
+                 {"id": 1, "required_amount": 12, "castingcell_demand": 1}]
+
+        solution = self.run_optimizaion(forms, ovens)
+        
+        # Verify
+        self.assertEqual(len(solution), 2) # there should just be 2 assignments
+
+    def test_many_forms(self):
+        ovens = [{"id": 0, "size": 5, "changeduration_sec": 50}]
+
+        forms = [{"id": 0, "required_amount": 18, "castingcell_demand": 1},
+                 {"id": 1, "required_amount": 2, "castingcell_demand": 1},
+                 {"id": 2, "required_amount": 13, "castingcell_demand": 1},
+                 {"id": 3, "required_amount": 4, "castingcell_demand": 1},
+                 {"id": 4, "required_amount": 15, "castingcell_demand": 1},
+                 {"id": 5, "required_amount": 6, "castingcell_demand": 1}]
+
+        solution = self.run_optimizaion(forms, ovens)
+        
+        # Verify
+        self.assertTrue(solution)
+
     def test_only_one_oven_fits(self):
         ovens = [{"id": 0, "size": 1, "changeduration_sec": 50},
                  {"id": 1, "size": 2, "changeduration_sec": 50},
