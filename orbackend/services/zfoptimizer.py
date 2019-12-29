@@ -115,6 +115,7 @@ class ZFOptimizer():
         objective_printer = ObjectivePrinter()
         solver = cp_model.CpSolver() 
         solver.parameters.max_time_in_seconds = 60 * 5 # TODO: make this configurable via api
+        solver.parameters.num_search_workers = 8
         status = solver.SolveWithSolutionCallback(self.model, objective_printer)
         print("Status is: " + solver.StatusName(status))
 
