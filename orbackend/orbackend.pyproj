@@ -29,7 +29,9 @@
     <Compile Include="runserver.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="datastructure.json" />
     <Content Include="docker\Dockerfile" />
+    <Content Include="NewFile1.txt" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
