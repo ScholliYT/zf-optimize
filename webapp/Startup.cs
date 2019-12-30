@@ -40,8 +40,8 @@ namespace webapp
             else if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Development")
             {
                 //Server=(localdb)\\mssqllocaldb;Database=MvcMovieContext-2;Trusted_Connection=True;MultipleActiveResultSets=true
-                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true";
-                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true";
+                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;MultipleActiveResultSets=true";
+                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;MultipleActiveResultSets=true";
 
                 services.AddDbContext<ApplicationDbContext>(
                     options => options.UseSqlServer(connectionAuthDb), ServiceLifetime.Transient);
