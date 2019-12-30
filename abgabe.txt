@@ -14,16 +14,15 @@ Die fertige Version ist zugreifbar unter: https://zf.kranz.space/
 Anmerkungen:
 Diese Lösung ist in Zusammenarbeit mit Alexander Korn, Nico Kranz, Lars Kecker, Linus Ricker und mir entstanden
 
-Wir haben uns für eine Webanwendung entschieden, da wir so unser Projekt Plattformunabhängig benutzen können. Außerdem war dies die Möglichkeit unsere Blazor Kenntnisse weiter auszubauen. Alternativ wäre auch JavaScript denkbar gewesen, jedoch schätzen wir die Vorteile, einer vollwertigen IDE. Daher haben uns daher auf C#, HTML5 und CSS beschränkt. Diese sind in jedem Browser und jeder Plattform ausführbar.
+Wir haben uns für eine Webanwendung entschieden, da wir so unser Projekt Plattformunabhängig benutzen können. Außerdem war dies die Möglichkeit unsere Blazor Kenntnisse weiter auszubauen. Alternativ wäre auch JavaScript denkbar gewesen, jedoch schätzen wir die Vorteile, einer vollwertigen IDE. Daher haben wir uns auf C#, HTML5 und CSS beschränkt. Diese sind in jedem Browser und jeder Plattform ausführbar.
 Für die Google OR Tools haben wir uns entschieden, da sie wie geschaffen für unser Optimierungsproblem schienen. Ebenso gab es dazu genug Materialien und Code-Beispiele um die Tools zu verstehen und anzuwenden.
 
 Kurzer Abriss des Codes:
 Readme ist evtl. interessant
 Seiten der https://github.com/ScholliYT/zf-optimize/tree/master/webapp/Pages
 Models: https://github.com/ScholliYT/zf-optimize/tree/develop/webapp/Data/Entities
-Datenbankinteraktion: https://github.com/ScholliYT/zf-optimize/tree/develop/webapp/Data/Migrations
 Business logic: https://github.com/ScholliYT/zf-optimize/tree/ortools/webapp/Pages
-
+Optimierungsalgorithmus: https://github.com/ScholliYT/zf-optimize/blob/ortools/orbackend/services/zfoptimizer.py
 
 
 Da uns in diesem Projekt der zeitliche Rahmen beschränkte, werden wir wahrscheinlich spaßeshalber eine umfassendere Lösung erstellen.
