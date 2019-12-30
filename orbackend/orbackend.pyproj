@@ -11,9 +11,11 @@
     <OutputPath>.</OutputPath>
     <Name>orbackend</Name>
     <RootNamespace>orbackend</RootNamespace>
-    <InterpreterId>
-    </InterpreterId>
+    <InterpreterId>MSBuild|env_orbackend|$(MSBuildProjectFullPath)</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>test*.py</UnitTestPattern>
+    <UnitTestRootDirectory>.</UnitTestRootDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,19 +26,37 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="services\orbackend.py" />
     <Compile Include="api\endpoints.py" />
     <Compile Include="api\__init__.py" />
     <Compile Include="runserver.py" />
+    <Compile Include="services\zfoptimizer.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_zfoptimizer.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="datastructure.json" />
     <Content Include="docker\Dockerfile" />
+    <Content Include="output_optimize.json" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
     <Folder Include="docker\" />
     <Folder Include="services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env_orbackend\">
+      <Id>env_orbackend</Id>
+      <Version>3.7</Version>
+      <Description>env_orbackend (Python 3.7 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
