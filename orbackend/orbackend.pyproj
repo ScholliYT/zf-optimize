@@ -40,7 +40,7 @@
   <ItemGroup>
     <Content Include="datastructure.json" />
     <Content Include="docker\Dockerfile" />
-    <Content Include="NewFile1.txt" />
+    <Content Include="output_optimize.json" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>

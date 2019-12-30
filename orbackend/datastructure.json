@@ -34,44 +34,45 @@
 
 // OUTPUT
 [
-    {
-        "name": "Assignment 1",
-        "used": true
-        "ticks": 12,
-        "assigments": [
-            -1, // Form 0 not used
-            -1, // From 1 not used
-            0, // Form 2 in oven 0
-            2, // Form 3 in oven 2
-            1, // Form 4 in oven 1
-            0 // Form 5 in oven 0
-        ]
-    },
-    {
-      "name": "Assignment 2",
-        "used": true
-        "ticks": 2,
-        "assigments": [
-            0, // Form 0 not used
-            0, // From 1 not used
-            1, // Form 2 in oven 0
-            1, // Form 3 in oven 2
-            2, // Form 4 in oven 1
-            2 // Form 5 in oven 0
-        ]
-    },
-    {
-      "name": "Assignment 3",
-        "used": false
-        "ticks": 0,
-        "assigments": [
-            0, // Form 0 not used
-            0, // From 1 not used
-            0, // Form 2 not used
-            0, // Form 3 not used
-            0, // Form 4 not used
-            0  // Form 5 not used
-        ]
-    }
-    ...
+  {
+    "name": "Assignment 1",
+    "used": true
+    "ticks": 12,
+    "assigments": [
+      -1, // Form 0 not used
+      -1, // From 1 not used
+      0, // Form 2 in oven 0
+      2, // Form 3 in oven 2
+      1, // Form 4 in oven 1
+      0 // Form 5 in oven 0
+    ]
+  },
+  {
+    "name": "Assignment 2",
+    "used": true
+    "ticks": 2,
+    "assigments": [
+      0, // Form 0 not used
+      0, // From 1 not used
+      1, // Form 2 in oven 0
+      1, // Form 3 in oven 2
+      2, // Form 4 in oven 1
+      2 // Form 5 in oven 0
+    ]
+  },
+  {
+    "name": "Assignment 3",
+    "used": false
+    "ticks": 0,
+    "assigments": [
+      0, // Form 0 not used
+      0, // From 1 not used
+      0, // Form 2 not used
+      0, // Form 3 not used
+      0, // Form 4 not used
+      0 // Form 5 not used
+    ]
+  }
+  ...
 ]
+
