@@ -26,7 +26,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="services\orbackend.py" />
     <Compile Include="api\endpoints.py" />
     <Compile Include="api\__init__.py" />
     <Compile Include="runserver.py" />
