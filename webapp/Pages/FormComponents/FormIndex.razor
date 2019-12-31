@@ -47,7 +47,7 @@
                     @foreach (var form in FormList)
                     {
                         <tr>
-                            <td>@form.Name</td>
+                            <td>@(form.Name??$"F{form.Id}")</td>
                             <td>@form.Actions</td>
                             <td>@form.ActionsMax</td>
                             <td>@form.WearDisplay</td>

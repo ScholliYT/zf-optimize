@@ -10,7 +10,8 @@ namespace webapp.Data.Entities
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        [JsonIgnore]
+        public string? Name { get; set; }
         
         [Range(0,int.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
         [JsonPropertyName("current_uses")]
