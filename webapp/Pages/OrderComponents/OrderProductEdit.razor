@@ -1,0 +1,24 @@
+﻿@inject IModalService ModalService
+
+<EditForm Model="@OrderProduct" OnValidSubmit="@Confirm" Class="container is-fluid">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="field">
+        <label class="label" for="ProductId">ProduktID:</label>
+        <div class="control">
+            <InputNumber Class="input" @bind-Value="@OrderProduct.ProductId" />
+        </div>
+    </div>
+    <div class="field">
+        <label class="label" for="Amount">Anzahl:</label>
+        <div class="control">
+            <InputNumber Class="input" @bind-Value="@OrderProduct.Amount" />
+        </div>
+    </div>
+
+    <button class="button" type="submit">Bestätigen</button>
+    <button @onclick="Cancel" class="button">Abbrechen</button>
+</EditForm>
+
+

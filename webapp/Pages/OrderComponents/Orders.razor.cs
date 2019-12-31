@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data;
@@ -13,6 +14,8 @@ namespace webapp.Pages.OrderComponents
     {
         [Inject] private ZFContext zfContext { get; set; }
         [Inject] private NavigationManager navigationManager { get; set; }
+        [Inject] protected IToastService ToastService { get; set; }
+
 
         [Parameter] public int? Year { get; set; }
 
@@ -22,12 +25,12 @@ namespace webapp.Pages.OrderComponents
         protected override async Task OnInitializedAsync()
         {
             await LoadOrders();
-            StateHasChanged();
         }
 
         private async Task LoadOrders()
         {
             OrderList = await zfContext.Orders.Where(o => o.Date.Year.Equals(Year)).OrderBy(o => o.Date).ToListAsync();
+            StateHasChanged();
         }
 
         private protected async Task AddMonth()
@@ -38,7 +41,6 @@ namespace webapp.Pages.OrderComponents
                 Date = new DateTime(Year.GetValueOrDefault(), month, 1) 
             });
             await LoadOrders();
-            StateHasChanged();
         }
 
         private protected void ManageProducts(int orderId)
@@ -46,9 +48,18 @@ namespace webapp.Pages.OrderComponents
             navigationManager.NavigateTo($"/order/manage/{orderId}");
         }
 
-        private protected async Task DeleteOrder(int orderId)
+        private protected async Task DeleteOrder(Order order)
         {
-            throw new NotImplementedException();
+            try
+            {
+                zfContext.Orders.Remove(order);
+                await zfContext.SaveChangesAsync();
+                await LoadOrders();
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim Löschen von der Bestellung.");
+            }
         }
     }
 }

@@ -1,0 +1,61 @@
+﻿@page "/order/manage/{OrderId:int}"
+
+<nav class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h4>Produktbestellungen</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="() => AddOrderProduct()">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>Ofen hinzufügen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        @if (OrderProducts == null)
+        {
+            <p><em>Lade...</em></p>
+        }
+        else
+        {
+            <table class="table is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>ProduktID</th>
+                        <th>Produktname</th>
+                        <th>Anzahl</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var orderproduct in OrderProducts)
+                    {
+                        <tr>
+                            <td>@orderproduct.Product.Id</td>
+                            <td>@orderproduct.Product.Name</td>
+                            <td>@orderproduct.Amount</td>
+                            <td>
+                                <button class="button is-small" @onclick="() => EditOrderProduct(orderproduct)">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                    <span>Bearbeiten</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button is-small is-danger" @onclick="() => DeleteOrderProduct(orderproduct)">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Löschen</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</nav>

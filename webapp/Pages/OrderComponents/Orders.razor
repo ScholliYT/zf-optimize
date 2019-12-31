@@ -15,7 +15,7 @@
                                 @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(order.Date.Month)
                             </div>
                             <div class="column level-right">
-                                <button class="button is-danger" @onclick="() => DeleteOrder(order.Id)">
+                                <button class="button is-danger" @onclick="() => DeleteOrder(order)">
                                     <span class="icon">
                                         <i class="fas fa-trash"></i>
                                     </span>
