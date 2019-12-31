@@ -3,7 +3,7 @@ Abgabe-Link:
 Der Quellcode für dieses Projekt ist in GitHub zugänglich unter: https://github.com/ScholliYT/zf-optimize.
 Die aktuellste Version des Codes findet man unter: https://github.com/ScholliYT/inez/releases/tag/abgabe.
 
-Die fertige Version ist zugreifbar unter: https://zf.kranz.space/
+Die fertige (nicht up to date) Version ist zugreifbar unter: https://zf.kranz.space/
 
 
 
