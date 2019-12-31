@@ -20,6 +20,9 @@ namespace webapp.Data.Entities.Backend
         [JsonPropertyName("assignments")]
         public List<int> FormAssignments { get; set; }
 
+        [JsonIgnore]
+        public Dictionary<Oven, List<Form>> OvenToFormAssignments { get; set; }
+
         [JsonPropertyName("oven_has_changed")]
         public List<bool> OvenChanges { get; set; }
 

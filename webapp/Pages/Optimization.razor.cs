@@ -164,7 +164,24 @@ namespace webapp.Pages
                         // IDs wieder zurück mappen
                         foreach (BackendAssignment assignment in Assignments)
                         {
-                            assignment.FormAssignments = assignment.FormAssignments.Select(fa => ovensIDMapping[fa]).ToList();
+                            assignment.FormAssignments = assignment.FormAssignments.Select(fa => fa == -1 ? -1 : ovensIDMapping[fa]).ToList();
+                            assignment.OvenToFormAssignments = new Dictionary<Oven, List<Form>>();
+
+                            for (int i = 0; i < assignment.FormAssignments.Count; i++)
+                            {
+                                int fa = assignment.FormAssignments[i];
+                                if (fa != -1)
+                                {
+                                    Oven oven = ovens.Single(o => o.Id == fa);
+                                    if (!assignment.OvenToFormAssignments.ContainsKey(oven))
+                                    {
+                                        assignment.OvenToFormAssignments.Add(oven, new List<Form>());
+                                    }
+
+                                    Form form = forms_used.Single(f => f.Id == formsIDMaping[i]);
+                                    assignment.OvenToFormAssignments[oven].Add(form);
+                                }
+                            }
                         }
 
                         StateHasChanged();
@@ -185,7 +202,7 @@ namespace webapp.Pages
         /// Maps IDs of the Form (123, 200, 303...) to (0,1,2...) in place
         /// </summary>
         /// <param name="forms"></param>
-        /// <returns>Mapping (old, new)</returns>
+        /// <returns>Mapping (new, old)</returns>
         private static Dictionary<int, int> MapIDsToStart_Form(List<BackendForm> forms)
         {
             Dictionary<int, int> idmapping = new Dictionary<int, int>();
@@ -201,7 +218,7 @@ namespace webapp.Pages
         /// Maps IDs of the Oven (123, 200, 303...) to (0,1,2...) in place
         /// </summary>
         /// <param name="ovens"></param>
-        /// <returns>Mapping (old, new)</returns>
+        /// <returns>Mapping (new, old)</returns>
         private static Dictionary<int, int> MapIDsToStart_Oven(List<BackendOven> ovens)
         {
             Dictionary<int, int> idmapping = new Dictionary<int, int>();

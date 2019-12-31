@@ -1,16 +1,21 @@
 ﻿@page "/orderyears"
-    <div class="columns">
-        <select @bind="@Year">
-            @if (YearList != null)
-            {
-                <option value="0"></option>
-                @foreach (var year in YearList)
+<nav class="panel">
+    <div class="panel-block">
+        <div class="column">
+            <select @bind="@Year" class="select">
+                @if (YearList != null)
                 {
-                    <option value="@year">@year.ToString()</option>
+                    <option value="0"></option>
+                    @foreach (var year in YearList)
+                    {
+                        <option value="@year">@year.ToString()</option>
+                    }
                 }
-            }
-        </select>
+            </select>
 
-        <button type="button" classs="button" @onclick="@RedirectToOrder">Bestellungen anzeigen</button>
+            <button type="button" class="button" @onclick="@RedirectToOrder">Bestellungen anzeigen</button>
+            <button type="button" class="button" @onclick="@AddOrder">Bestellung hinzufügen</button>
+        </div>
     </div>
+</nav>
 <BackButton></BackButton>

@@ -17,7 +17,7 @@ namespace webapp.Pages.OrderComponents
         [Inject] protected IToastService ToastService { get; set; }
 
 
-        [Parameter] public int? Year { get; set; }
+        [Parameter] public int Year { get; set; }
 
         private protected List<Order> OrderList { get; set; }
 
@@ -35,12 +35,7 @@ namespace webapp.Pages.OrderComponents
 
         private protected async Task AddMonth()
         {
-            var month = OrderList.Count + 1;
-            await zfContext.Orders.AddAsync(new Order
-            {
-                Date = new DateTime(Year.GetValueOrDefault(), month, 1) 
-            });
-            await LoadOrders();
+            navigationManager.NavigateTo("/order/manage");
         }
 
         private protected void ManageProducts(int orderId)

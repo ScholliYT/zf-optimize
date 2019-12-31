@@ -15,31 +15,77 @@ namespace webapp.Pages.OrderComponents
     public partial class OrderEdit : ComponentBase
     {
         [Inject] private ZFContext zfContext { get; set; }
+        [Inject] protected NavigationManager NavigationManager { get; set; }
         [Inject] protected IToastService ToastService { get; set; }
         [Inject] protected IModalService ModalService { get; set; }
 
+        [Parameter] public int? OrderId { get; set; }
 
-
-        [Parameter] public int OrderId { get; set; }
-
+        public Order Order { get; set; }
         private protected List<OrderProduct> OrderProducts { get; set; }
+
+        protected bool NotFound { get; private set; }
+        protected bool CreationMode { get; private set; }
 
         protected override async Task OnInitializedAsync()
         {
-            await LoadOrderProducts();
+            try
+            {
+                CreationMode = OrderId == default;
+
+                if (CreationMode)
+                {
+                    Order = new Order()
+                    {
+                        Date = DateTime.Now.Date
+                    };
+                    OrderProducts = new List<OrderProduct>();
+                }
+                else
+                {
+                    Order = await zfContext.Orders.FirstOrDefaultAsync(o => o.Id == OrderId);
+                    NotFound = Order == null;
+
+                    if (!NotFound)
+                    {
+                        await LoadOrderProducts();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ToastService.ShowError($"Fehler beim Laden.");
+            }
         }
 
         private async Task LoadOrderProducts()
         {
-            OrderProducts = await zfContext.OrderProducts.Where(op => op.OrderId == OrderId).Include(op => op.Product).Include(op => op.Order).ToListAsync();
+            OrderProducts = await zfContext.OrderProducts.Where(op => op.OrderId == Order.Id).Include(op => op.Product).Include(op => op.Order).ToListAsync();
             StateHasChanged();
+        }
+
+        protected async Task Save()
+        {
+            if (CreationMode)
+            {
+                zfContext.Orders.Add(Order);
+            }
+            await zfContext.SaveChangesAsync();
+            NavigationManager.NavigateTo($"/orders/{Order.Date.Year}");
+            ToastService.ShowSuccess($"Bestellung {Order.Id} {(CreationMode ? "erstellt" : "geändert")}.");
         }
 
         protected void AddOrderProduct()
         {
+            if (Order.Id == default)
+            {
+                ToastService.ShowWarning($"Bitte speichern Sie zuerst die Bestellung.");
+                return;
+            }
+
             var orderproduct = new OrderProduct()
             {
-                OrderId = OrderId
+                OrderId = Order.Id
             };
             var parameters = new ModalParameters();
 
@@ -64,12 +110,9 @@ namespace webapp.Pages.OrderComponents
             }
             catch (Exception)
             {
-
                 ToastService.ShowError($"Fehler beim Hinzufügen der Produktbestellung.");
             }
         }
-
-
         protected void EditOrderProduct(OrderProduct orderProduct)
         {
             var parameters = new ModalParameters();

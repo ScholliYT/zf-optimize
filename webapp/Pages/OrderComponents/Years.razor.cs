@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using webapp.Data;
@@ -12,6 +14,8 @@ namespace webapp.Pages.OrderComponents
     {
         [Inject] private ZFContext zfContext { get; set; }
         [Inject] private NavigationManager navigationManager { get; set; }
+        [Inject] protected IModalService ModalService { get; set; }
+
 
 
         private protected List<int> YearList { get; set; }
@@ -29,6 +33,11 @@ namespace webapp.Pages.OrderComponents
         {
             if (Year != default)
                 navigationManager.NavigateTo($"/orders/{Year}");
+        }
+
+        private protected void AddOrder()
+        {
+            navigationManager.NavigateTo("/order/manage");
         }
     }
 }
