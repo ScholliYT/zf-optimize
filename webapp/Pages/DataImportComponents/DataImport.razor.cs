@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using BlazorInputFile;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using webapp.Data;
 using webapp.Data.Entities;
 
@@ -18,6 +16,7 @@ namespace webapp.Pages.DataImportComponents
     {
         [Inject] private protected ZFContext zfContext { get; set; }
         private protected bool TaskFinished { get; set; }
+
         private protected async Task HandleFileUpload(IFileListEntry[] files)
         {
             List<Form>? importedForms;
@@ -55,23 +54,21 @@ namespace webapp.Pages.DataImportComponents
                             .Where(c => int.Parse(c.Address.Substring(1, c.Address.Length - 1)) > 5 &&
                                         c.Value.ToString().StartsWith('F')).Select(c => c.Address).ToList();
                         if (formsAdresses != null)
-                        {
                             await zfContext.Forms.AddRangeAsync(from fa in formsAdresses
-                                                                select int.Parse(fa.Substring(1, fa.Length - 1))
-                                                                into row
-                                                                let anzBisher = forms?.GetValue<int>(row, 2)
-                                                                let anzMax = forms?.GetValue<int>(row, 3)
-                                                                let gieszBedarf = forms?.GetValue<float>(row, 4)
-                                                                let name = forms?.GetValue<string>(row, 1)
-                                                                orderby row
-                                                                select new Form
-                                                                {
-                                                                    Actions = anzBisher.GetValueOrDefault(),
-                                                                    ActionsMax = anzMax.GetValueOrDefault(),
-                                                                    CastingCells = gieszBedarf.GetValueOrDefault(),
-                                                                    Name = name
-                                                                });
-                        }
+                                select int.Parse(fa.Substring(1, fa.Length - 1))
+                                into row
+                                let anzBisher = forms?.GetValue<int>(row, 2)
+                                let anzMax = forms?.GetValue<int>(row, 3)
+                                let gieszBedarf = forms?.GetValue<float>(row, 4)
+                                let name = forms?.GetValue<string>(row, 1)
+                                orderby row
+                                select new Form
+                                {
+                                    Actions = anzBisher.GetValueOrDefault(),
+                                    ActionsMax = anzMax.GetValueOrDefault(),
+                                    CastingCells = gieszBedarf.GetValueOrDefault(),
+                                    Name = name
+                                });
                     }
 
                     async Task FindProducts()
@@ -81,15 +78,13 @@ namespace webapp.Pages.DataImportComponents
                             products?.Cells.Where(c => c.Value != null && c.Value.ToString().StartsWith("Produkt Nr. "))
                                 .Select(c => c.Address).ToList();
                         if (productsAdresses != null)
-                        {
                             await zfContext.Products.AddRangeAsync(from pa in productsAdresses
-                                                                   select int.Parse(pa.Substring(1, pa.Length - 1))
-                                                                   into row
-                                                                   let name = products?.GetValue<string>(row, 3)
-                                                                   orderby row
-                                                                   select new Product
-                                                                   { Name = name });
-                        }
+                                select int.Parse(pa.Substring(1, pa.Length - 1))
+                                into row
+                                let name = products?.GetValue<string>(row, 3)
+                                orderby row
+                                select new Product
+                                    {Name = name});
                     }
 
                     async Task AssociateProductForms()
@@ -111,15 +106,17 @@ namespace webapp.Pages.DataImportComponents
                             select new
                             {
                                 id = productNr,
-                                amounts = productforms.Cells.Where(c => c.Address.Substring(1) == row.ToString() && !c.Address.StartsWith('A'))
+                                amounts = productforms.Cells.Where(c =>
+                                        c.Address.Substring(1) == row.ToString() && !c.Address.StartsWith('A'))
                                     .Select(c => c.Value.ToString()).ToArray()
                             }).ToList();
 
-                    ;
+                        ;
 
                         foreach (var amount in amounts)
                         {
-                            var product = await zfContext.Products.SingleAsync(p => p.Name.Contains(amount.id.ToString()));
+                            var product =
+                                await zfContext.Products.SingleAsync(p => p.Name.Contains(amount.id.ToString()));
                             for (var i = 1; i <= zfContext.Forms.Count(); i++)
                             {
                                 var form = await zfContext.Forms.SingleAsync(f => f.Name == $"F{i}");
@@ -127,7 +124,7 @@ namespace webapp.Pages.DataImportComponents
                                 {
                                     Form = form,
                                     FormId = form.Id,
-                                    Amount = float.Parse(amount.amounts[i-1]),
+                                    Amount = float.Parse(amount.amounts[i - 1]),
                                     Product = product,
                                     ProductId = product.Id
                                 });
@@ -146,8 +143,7 @@ namespace webapp.Pages.DataImportComponents
                             var productrows = ordersheet.Cells.Where(c => c.Text.StartsWith("Produkt Nr. ")).ToList();
 
                             foreach (var row in productrows.Select(x => int.Parse(x.Address.Substring(1))))
-                            {
-                                for (int i = 1; i <= 12; i++)
+                                for (var i = 1; i <= 12; i++)
                                 {
                                     var order = await zfContext.Orders.AddAsync(new Order
                                     {
@@ -156,11 +152,11 @@ namespace webapp.Pages.DataImportComponents
                                     await zfContext.OrderProducts.AddAsync(new OrderProduct
                                     {
                                         Order = order.Entity,
-                                        Product = await zfContext.Products.SingleAsync(p => p.Name == ordersheet.GetValue<string>(row, 3)),
-                                        Amount = ordersheet.GetValue<int>(row, i+3)
+                                        Product = await zfContext.Products.SingleAsync(p =>
+                                            p.Name == ordersheet.GetValue<string>(row, 3)),
+                                        Amount = ordersheet.GetValue<int>(row, i + 3)
                                     });
                                 }
-                            }
                         }
                     }
                 }
