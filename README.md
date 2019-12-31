@@ -22,9 +22,12 @@ Find the __Swagger__(orbackend) docs at: http://localhost:5000/.
 - [Chart.js for Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) (Frontend Charts)
 - SQL Server (Database)
 - Docker / Docker Compose (Container)
-- Flask-Restful (Backend Optimazation API)
-- Google-OR Tools (Optimazation Framework)
+- Flask / [Flask-Restplus](https://flask-restplus.readthedocs.io/en/stable/) (Backend Optimazation API)
+- [Google OR Tools](https://developers.google.com/optimization/) (Optimazation Framework)
+
+## Architecture
+![system architecture diagram](/docs/img/system_architecture_diagram.png)
 
 ## Optimization Backend
-The optimization backend uses Flask + Flaskrestplus as REST-API interface for the optimization logic made with Google OR Tools.
-Docs on how to run this are located in the [wiki](https://github.com/ScholliYT/zf-optimize/wiki/Optimization-Backend)
+The optimization backend uses Flask + [Flask-Restplus](https://flask-restplus.readthedocs.io/en/stable/) as REST-API interface for the optimization logic made with [Google OR Tools](https://developers.google.com/optimization/).
+Docs on how to run this are located in the [wiki](https://github.com/ScholliYT/zf-optimize/wiki/Optimization-Backend).
