@@ -15,7 +15,7 @@ namespace webapp.Pages.FormComponents
         [Inject] protected NavigationManager NavigationManager { get; set; }
         [Inject] protected IToastService ToastService { get; set; }
 
-        public List<Form> FormList { get; set; }
+        private protected List<Form> FormList { get; set; }
 
         protected override async Task OnInitializedAsync()
         {

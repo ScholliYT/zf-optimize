@@ -143,7 +143,7 @@ namespace webapp.Pages.DataImportComponents
                                 var order = await zfContext.Orders.AddAsync(new Order
                                 {
                                     Date = new DateTime(year, i, 1)
-                                });
+                                }); 
                                 foreach (var row in productrows.Select(x => int.Parse(x.Address.Substring(1))))
                                 {
                                     await zfContext.OrderProducts.AddAsync(new OrderProduct
