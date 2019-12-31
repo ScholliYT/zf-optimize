@@ -23,6 +23,8 @@ form_model = api.model('Form', {
 'id': fields.Integer,
 'required_amount': fields.Integer,
 'castingcell_demand': fields.Integer,
+'current_uses': fields.Integer,
+'max_uses': fields.Integer,
 })
 
 optimization_request = api.model("Optimization", {
