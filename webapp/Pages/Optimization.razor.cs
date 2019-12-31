@@ -58,6 +58,27 @@ namespace webapp.Pages
         {
             try
             {
+                var ovens = await _zfContext.Ovens.ToListAsync();
+
+                // alle orderproducts der ausgewählten Orders
+                var orderProducts = await _zfContext.OrderProducts
+                    .Where(op => op.Amount > 0)
+                    .Where(op => SelectedOrders.Select(o => o.Id).Contains(op.OrderId))
+                    .Include(op => op.Product)
+                    .Include(op => op.Order)
+                    .ToListAsync();
+                var products_used = orderProducts.Select(op => op.Product).Distinct().ToList();
+
+                // genutze Produktforms
+                var productForms = await _zfContext.ProductForms
+                    .Where(pf => pf.Amount > 0)
+                    .Where(pf => products_used.Select(p => p.Id).Contains(pf.ProductId))
+                    .Include(pf => pf.Product)
+                    .Include(pf => pf.Form)
+                    .Distinct()
+                    .ToListAsync();
+                var forms_used = productForms.Select(pf => pf.Form).Distinct().ToList();
+
                 string baseUrl = "http://orbackend:5000/optimize";
 
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(baseUrl);
@@ -66,28 +87,35 @@ namespace webapp.Pages
 
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
+                    var backend_ovens = ovens.Select(oven => BackendOven.MakeBackendOven(oven)).ToList();
+
+                    // Anzahl der Stück je Form berechnen
+                    var formamounts_floats = new Dictionary<Form, double>();
+                    foreach (var op in orderProducts)
+                    {
+                        foreach (var pf in productForms.Where(pf => pf.Product == op.Product))
+                        {
+                            if(!formamounts_floats.ContainsKey(pf.Form))
+                            {
+                                formamounts_floats.Add(pf.Form, 0);
+                            }
+                            formamounts_floats[pf.Form] += op.Amount * pf.Amount;
+                        }
+                    }
+
+                    // Wieder in ints konvertieren
+                    var formamounts = new Dictionary<Form, int>();
+                    foreach (var faf in formamounts_floats)
+                    {
+                        formamounts.Add(faf.Key, (int)faf.Value);
+                    }
+
+                    var backend_forms = forms_used.Select(form => BackendForm.MakeBackendForm(form, formamounts[form])).ToList();
+
                     var data = new
                     {
-                        ovens = new BackendOven[]
-                        {
-                        new BackendOven()
-                        {
-                            Id=0,
-                            CastingCellAmount=1,
-                            ChangeDuration=TimeSpan.FromSeconds(5)
-                        }
-                        },
-                        forms = new BackendForm[]
-                        {
-                        new BackendForm()
-                        {
-                            Id=0,
-                            CastingCells=1,
-                            Actions=10,
-                            ActionsMax=100,
-                            Backend_RequiredAmount = 15
-                        }
-                        }
+                        ovens = backend_ovens,
+                        forms = backend_forms
                     };
 
                     // @"{""ovens"":[{""id"":0,""size"":1,""changeduration_sec"":5}],""forms"":[{""id"":0,""required_amount"":15,""castingcell_demand"":1}]}";
@@ -106,7 +134,7 @@ namespace webapp.Pages
                         JSONFromAPI = data;
 
                         Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(data);
-
+                        // TODO: Wieder um Size Scale faktor runterskallieren
                         StateHasChanged();
                     }
                 }
@@ -115,7 +143,7 @@ namespace webapp.Pages
             {
                 ToastService.ShowError($"Fehler bei der Verbindung zur Backend API. Wohlmöglich ist die API nicht erreichbar.");
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 ToastService.ShowError($"Fehler bei der Verbindung zur Backend API.");
             }
