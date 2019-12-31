@@ -26,10 +26,11 @@ class ZFOptimizer():
 
         self.form_sizes = list(map(lambda f: f['castingcell_demand'], self.forms))
         # TODO: ausrechnen lassen# sum(order_requirements) erstmal
-        #max_assignment = 2 # maximal erlaubte Anzahl von Belegungen,
+       
         self.max_assignment = sum(list(map(lambda f: f['required_amount'], self.forms))) # maximal erlaubte Anzahl von Belegungen
+        #self.max_assignment = 10
         self.max_required_amount = max(list(map(lambda f: f['required_amount'], self.forms))) # maximale geforderte Stückzahl einer spezifischen Form
-        
+        self.max_sum = self.max_assignment * 1000 #wieso? wie groß? Häää?
         # local vars
         self.model = cp_model.CpModel()
         self.assignments = []        
@@ -38,6 +39,7 @@ class ZFOptimizer():
         self.add_ct_oven_sizes()
         self.add_ct_all_produced()
         self.add_ct_use_first_assignments()
+        self.add_ct_repair_forms()
 
     # C1: Kein Ofen bei keiner Belegung überfüllt
     def add_ct_oven_sizes(self):
@@ -57,12 +59,14 @@ class ZFOptimizer():
         for idx, assignment in enumerate(self.assignments[:-1]):
             next_assignment = self.assignments[idx + 1]
             self.model.AddImplication(assignment['used'].Not(), next_assignment['used'].Not())
-
-    # C4: Formen werden stets ersetzt, wenn sie abgenutzt werden# TODO#
-        #for form in range(forms_amount): #for assignment_id in range(rows): #Effizientere Methode ohne diese# Schleife ? #sumUntilNow = sum(data)# self.model.Add(#negative Zahl existiert: Null muss existieren
-#    def add_ct_form_exchanged(self):
-#       for idx, assignment in enumerate(self.assignments)
         
+    
+    # C4: Formen werden stets ersetzt, wenn sie abgenutzt werden
+    def add_ct_repair_forms(self):
+        for form in self.forms:
+            for assignment_id, assignment in enumerate(self.assignments): #alle außer dem Ersten Assignment durchgehen
+                self.model.Add(assignment['form_assignments'][form['id']]['moduloed_sum_until_now'] + assignment['ticks'] >= form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here'])
+                self.model.Add(assignment['form_assignments'][form['id']]['moduloed_sum_until_now'] + assignment['ticks'] <  form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here'].Not())
 
     def init_model(self):
         for assignment_id in range(self.max_assignment):
@@ -73,6 +77,7 @@ class ZFOptimizer():
             current_assignment['form_assignments'] = []
             for form in self.forms:
                 form_assignment = {}
+                current_assignment['form_assignments'].append(form_assignment)
                 form_assignment['oven'] = self.model.NewIntVar(-1, len(self.ovens) -1, current_assignment['name'] + '_Form' + str(form['id'])) # in which oven is this form used in this assignment (-1 == unused)
 
                 # Declare intermediate boolean variable to track usage of form in this assignment  
@@ -86,8 +91,19 @@ class ZFOptimizer():
                 form_assignment['produced'] = self.model.NewIntVar(0, form['required_amount'], "%s_produces_of_type_form%i" % (current_assignment['name'], form['id']))
                 self.model.AddMultiplicationEquality(form_assignment['produced'], (current_assignment['ticks'], form_assignment['used'])) # either "ticks * 0" or "ticks * 1"
 
-                current_assignment['form_assignments'].append(form_assignment)
+                # is this form repaired prior to this assignment?
+                form_assignment['repaired_here'] = self.model.NewBoolVar('Form%i_is_repaired_in_%s' % (form['id'], current_assignment['name']))
 
+                
+                form_assignment['moduloed_sum_until_now'] = self.model.NewIntVar(0, form['max_uses'], 'Modulo_Helper_Form%i %s' % (form['id'], current_assignment['name']))
+                sum_until_now = self.model.NewIntVar(0, self.max_sum, 'sum of all ticks that happened so far')
+                self.model.Add(sum_until_now == form['current_uses'] + sum([self.assignments[assignment_hlp_index]['form_assignments'][form['id']]['produced'] for assignment_hlp_index in range(assignment_id)]))
+                self.model.AddModuloEquality(form_assignment['moduloed_sum_until_now'], sum_until_now , form['max_uses'])
+                self.model.Add(form_assignment['moduloed_sum_until_now'] + current_assignment['ticks'] == form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'])
+                self.model.Add(form_assignment['moduloed_sum_until_now'] + current_assignment['ticks'] != form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'].Not())
+            
+                
+               
             # init form_used_in_oven
             current_assignment['form_used_in_oven'] = {}
             for f in range(len(self.forms)):
@@ -97,13 +113,19 @@ class ZFOptimizer():
                     self.model.Add(current_assignment['form_assignments'][f]['oven'] != o).OnlyEnforceIf(form_f_used_in_oven[o].Not())
 
                     current_assignment['form_used_in_oven'][(f,o)] = form_f_used_in_oven[o]
+                    
 
             # init oven_has_changed
             # whose sum shall be minimized
             current_assignment['oven_has_changed'] = []
+            current_assignment['oven_needs_special_treatment'] = []
             for oven in self.ovens:
                 current_oven_has_changed = self.model.NewBoolVar('%s_oven%i_has_changed' %(current_assignment['name'], oven['id']))
+                current_oven_needs_special_treetment = self.model.NewBoolVar('%s_oven%i_needs_special_treatment' %(current_assignment['name'], oven['id']))
                 current_assignment['oven_has_changed'].append(current_oven_has_changed)
+                current_assignment['oven_needs_special_treatment'].append(current_oven_needs_special_treetment)
+                self.model.AddImplication(current_oven_has_changed, current_oven_needs_special_treetment)
+               
 
                 form_used_in_oven = current_assignment['form_used_in_oven'] #je nachdem, wie form_used_in_oven gespeichert wird - evtl. 3-Tupel mit assignment an erster Stelle?
                
@@ -124,10 +146,14 @@ class ZFOptimizer():
                         self.model.AddAbsEquality(form_changed_in_oven_abs[f], form_changed_in_oven[f])
                     
                     # Mindestens ein Unterschied <=> Maximum aller Differenzen oder deren Inverse ist 1 <=> Mindestens eine Differenz ist != 0
-                    self.model.Add(sum(form_changed_in_oven_abs) > 0).OnlyEnforceIf(current_oven_has_changed)
+                    self.model.Add(sum(form_changed_in_oven_abs) > 0).OnlyEnforceIf(current_oven_has_changed) #TODO Ersetzen oder so
                     # Gar kein Unterschied <=> Maximum aller Differenzen oder deren Inverse ist 0 <=> Alle Differenzen sind 0
                     self.model.Add(sum(form_changed_in_oven_abs) == 0).OnlyEnforceIf(current_oven_has_changed.Not())
-                    
+                    #oven needs to be worked on if (1) its forms are exchanged
+                for f in range(len(self.forms)): #id_vs counter
+                    self.model.AddImplication(current_oven_needs_special_treetment.Not(), current_assignment['form_assignments'][f]['repaired_here'].Not())
+                
+
 
             # Link produced[] to assignment.used
             self.model.Add(sum(fa['produced'] for fa in current_assignment['form_assignments']) == 0).OnlyEnforceIf(current_assignment['used'].Not())
@@ -145,7 +171,9 @@ class ZFOptimizer():
         # Anzahl der Belegungen in denen etwas hergestellt wird minimieren - > Anzahl der Wechselungen der Belegung minimiern
         # TODO: Wechseldauer eines Ofens mit einbeziehen 
 
-        self.model.Minimize(sum([sum(assignment['oven_has_changed']) for assignment in self.assignments]) + sum([assignment['ticks'] + assignment['used'] for assignment in self.assignments]))
+        self.model.Minimize(sum([sum(assignment['oven_needs_special_treatment']) for assignment in self.assignments]) + sum([assignment['ticks'] + assignment['used'] for assignment in self.assignments]))
+        #self.model.Minimize(sum([sum(assignment['oven_needs_special_treatment']) for assignment in self.assignments]) + sum([assignment['ticks']  for assignment in self.assignments]))
+        #old#self.model.Minimize(sum([sum(assignment['oven_has_changed']) for assignment in self.assignments]))
 
 
         objective_printer = ObjectivePrinter()
@@ -154,7 +182,6 @@ class ZFOptimizer():
         solver.parameters.num_search_workers = 8
         status = solver.SolveWithSolutionCallback(self.model, objective_printer)
         print("Status is: " + solver.StatusName(status))
-        
         if status == cp_model.MODEL_INVALID:
             #The given CpModelProto didn't pass the validation step. You can get a detailed error by calling ValidateCpModel(model_proto).
             print("Model is invalid:")
@@ -167,18 +194,18 @@ class ZFOptimizer():
                         "name": assignment['name'],
                         "used": True if solver.Value(assignment['used']) else False,
                         "ticks": solver.Value(assignment['ticks']),
-                        "assigments": [solver.Value(fa['oven']) for fa in assignment['form_assignments']]
+                        "assignments": [solver.Value(fa['oven']) for fa in assignment['form_assignments']]
                 }
                 if oa['used']:
                     print(assignment['name'])
                     print("   used: %s" % ("yes" if solver.Value(assignment['used']) else "no"))
                     print("   ticks: %i" % (solver.Value(assignment['ticks'])))
-                    print("   assigments:")
+                    print("   assignments:")
                     for idx, form_assignment in enumerate(assignment['form_assignments']):
                         used = solver.Value(form_assignment['used'])
                         oven = solver.Value(form_assignment['oven'])
                         produced = solver.Value(form_assignment['produced'])
-                        print("       From %i %s used %s" % (idx, "is" if used else "is not", f'in oven {oven} to produce {produced}' if used else ""))
+                        print("       Form %i %s used %s" % (idx, "is" if used else "is not", f'in oven {oven} to produce {produced}' if used else "") + '    repaired_here: ' + str(solver.Value(form_assignment['repaired_here'])))
                     print("   oven_changes:")
                     for idx, oven_has_changed in enumerate(assignment['oven_has_changed']):
                         print("       Oven %i has %schanged" % (idx, "" if solver.Value(oven_has_changed) else "not "))
@@ -186,6 +213,7 @@ class ZFOptimizer():
             # STATS
             print("Optimizaion goals:")
             print("    oven_changes %i" %     (sum([sum([solver.Value(ovh) for ovh in assignment['oven_has_changed']]) for assignment in self.assignments])))
+            print("    oven_needs_special_treatment %i" %     (sum([sum([solver.Value(ovh) for ovh in assignment['oven_needs_special_treatment']]) for assignment in self.assignments])))
             print("    ticks %i" %            (sum([solver.Value(assignment['ticks'])                 for assignment in self.assignments])))
             print("    assignments_used %i" % (sum([solver.Value(assignment['used'])                  for assignment in self.assignments])))
 
