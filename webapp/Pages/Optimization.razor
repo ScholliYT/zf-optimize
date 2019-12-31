@@ -1,0 +1,23 @@
+﻿@page "/optimization"
+
+
+<nav class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h4>Optimierung</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="StartOptimization">
+                    <span class="icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </span>
+                    <span>Optimierung ausführen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <p>@DataFromAPI</p>
+    </div>
+</nav>

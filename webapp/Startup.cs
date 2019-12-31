@@ -58,6 +58,10 @@ namespace webapp
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ZFContext")), ServiceLifetime.Transient);
             }
+            else
+            {
+                throw new InvalidOperationException("Please specify which env you want to use.");
+            }
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
