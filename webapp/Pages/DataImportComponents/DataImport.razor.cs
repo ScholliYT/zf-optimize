@@ -91,10 +91,8 @@ namespace webapp.Pages.DataImportComponents
                     {
                         var productforms =
                             worksheets.FirstOrDefault(w => w.Name.Contains("Zuweisung Produkte und Formen"));
-                        int tmp;
-                        float tmp2;
                         var productAdresses = productforms.Cells.Where(c =>
-                                int.TryParse(c.Value.ToString(), out tmp) &&
+                                int.TryParse(c.Value.ToString(), out int tmp) &&
                                 c.Address.StartsWith("A"))
                             .Select(c => c.Address.Substring(1, c.Address.Length - 1)).ToList();
 
