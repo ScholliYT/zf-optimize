@@ -120,14 +120,17 @@ namespace webapp.Pages.DataImportComponents
                             for (var i = 1; i <= zfContext.Forms.Count(); i++)
                             {
                                 var form = await zfContext.Forms.SingleAsync(f => f.Name == $"F{i}");
-                                await zfContext.ProductForms.AddAsync(new ProductForm
+                                if (float.Parse(amount.amounts[i - 1]) != 0f)
                                 {
-                                    Form = form,
-                                    FormId = form.Id,
-                                    Amount = float.Parse(amount.amounts[i - 1]),
-                                    Product = product,
-                                    ProductId = product.Id
-                                });
+                                    await zfContext.ProductForms.AddAsync(new ProductForm
+                                    {
+                                        Form = form,
+                                        FormId = form.Id,
+                                        Amount = float.Parse(amount.amounts[i - 1]),
+                                        Product = product,
+                                        ProductId = product.Id
+                                    });
+                                }
                             }
                         }
                     }

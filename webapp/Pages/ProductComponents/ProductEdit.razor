@@ -1,4 +1,4 @@
-@page "/product"
+﻿@page "/product"
 @page "/product/{Id:int}"
 
 
@@ -6,22 +6,28 @@
     <div class="panel-heading">
         <h4>Produkt</h4>
     </div>
-    <div class="panel-block">
 
-        @if (LoadFailed)
-        {
+
+    @if (LoadFailed)
+    {
+        <div class="panel-block">
             <h2>Entschuldigung, diese Seite konnte aufgrund eines Fehlers nicht geladen werden.</h2>
-        }
-        else if (NotFound)
-        {
+        </div>
+    }
+    else if (NotFound)
+    {
+        <div class="panel-block">
             <h2>Entschuldigung, das Produkt konnte nicht gefunden werden.</h2>
-        }
-        else if (Product == null)
-        {
-            <p><em>Lade...</em></p>
-        }
-        else
-        {
+        </div>
+    }
+    else if (Product == null)
+    {
+        <p><em>Lade...</em></p>
+    }
+    else
+    {
+        <div class="panel-block">
+
             <h3>@(CreationMode ? "Produkt hinzufügen" : "Produkt bearbeiten")</h3>
             <EditForm Model="@Product" OnValidSubmit="@Save" Class="container is-fluid">
                 <DataAnnotationsValidator />
@@ -42,7 +48,42 @@
 
                 <button class="button" type="submit">@(CreationMode ? "Hinzufügen" : "Ändern")</button>
             </EditForm>
-        }
-    </div>
+        </div>
+        <div class="panel-block">
+            <h3>Formen</h3>
+            <table class="table is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>FormID</th>
+                        <th>Anzahl</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var productForm in ProductForms)
+                    {
+                        <tr>
+                            <td>@productForm.FormId</td>
+                            <td>@productForm.Amount</td>
+                            <td>
+                                <button class="button is-small" @onclick="() => EditProductForm(productForm)">
+                                    <span class="icon"><i class="fas fa-edit"></i></span>
+                                    <span>Bearbeiten</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button is-small is-danger" @onclick="() => DeleteProductForm(productForm)">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Löschen</span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button class="button" @onclick="AddProductForm">Form hinzufügen</button>
+        </div>
+    }
 </div>
 <BackButton></BackButton>

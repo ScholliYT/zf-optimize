@@ -17,7 +17,14 @@ namespace webapp.Data.Entities.Backend
         [JsonPropertyName("ticks")]
         public int Ticks { get; set; }
 
-        [JsonPropertyName("assigments")]
+        [JsonPropertyName("assignments")]
         public List<int> FormAssignments { get; set; }
+
+        [JsonPropertyName("oven_has_changed")]
+        public List<bool> OvenChanges { get; set; }
+
+        [JsonPropertyName("repaired_here")]
+        public List<bool> FormRepairs { get; set; }
+
     }
 }

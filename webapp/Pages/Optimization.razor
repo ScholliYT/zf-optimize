@@ -41,7 +41,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Orders)
+                @foreach (var order in Orders.OrderBy(o => o.Date))
                 {
                 <tr>
                     <td class="has-text-centered is-vcentered" width="50">
@@ -63,7 +63,6 @@
         </table>
         }
     </div>
-    <p>@JSONFromAPI</p>
     <div class="panel-block">
         @if (Assignments == null)
         {

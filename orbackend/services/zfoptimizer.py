@@ -24,6 +24,8 @@ class ZFOptimizer():
         # Scale castingcell_demand and oven.size so that they are ints
         self.forms = forms
 
+        self.tick_cost = max(list(map(lambda f: f['changeduration_sec'], self.ovens)))
+
         self.form_sizes = list(map(lambda f: f['castingcell_demand'], self.forms))
         # TODO: ausrechnen lassen# sum(order_requirements) erstmal
        
@@ -64,9 +66,19 @@ class ZFOptimizer():
     # C4: Formen werden stets ersetzt, wenn sie abgenutzt werden
     def add_ct_repair_forms(self):
         for form in self.forms:
-            for assignment_id, assignment in enumerate(self.assignments): #alle außer dem Ersten Assignment durchgehen
-                self.model.Add(assignment['form_assignments'][form['id']]['moduloed_sum_until_now'] + assignment['ticks'] >= form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here'])
-                self.model.Add(assignment['form_assignments'][form['id']]['moduloed_sum_until_now'] + assignment['ticks'] <  form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here'].Not())
+            for last_assignment_id, assignment in enumerate(self.assignments[1:]): #alle außer das erste Assignment durchgehen
+                previous_assignment = self.assignments[last_assignment_id]
+                previous_form_assignment = previous_assignment['form_assignments'][form['id']]
+
+                form_assignment = assignment['form_assignments'][form['id']]
+                
+               
+                  # + 1: Wenn die Haltbarkeit überschritten wird, muss die Form bis zur nächsten Belegung gewechselt werden -> es ist also repaired_here des folge-assignments gefragt
+                self.model.Add(previous_form_assignment['moduloed_sum_until_now'] + previous_form_assignment['produced'] == form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here']) 
+                self.model.Add(previous_form_assignment['moduloed_sum_until_now'] + previous_form_assignment['produced'] <  form['max_uses']).OnlyEnforceIf(assignment['form_assignments'][form['id']]['repaired_here'].Not())
+
+                #self.model.Add(previous_form_assignment['moduloed_sum_until_now'] + previous_assignment['ticks'] == form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'])
+                #self.model.Add(previous_form_assignment['moduloed_sum_until_now'] + previous_assignment['ticks'] != form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'].Not())
 
     def init_model(self):
         for assignment_id in range(self.max_assignment):
@@ -91,17 +103,15 @@ class ZFOptimizer():
                 form_assignment['produced'] = self.model.NewIntVar(0, form['required_amount'], "%s_produces_of_type_form%i" % (current_assignment['name'], form['id']))
                 self.model.AddMultiplicationEquality(form_assignment['produced'], (current_assignment['ticks'], form_assignment['used'])) # either "ticks * 0" or "ticks * 1"
 
-                # is this form repaired prior to this assignment?
-                form_assignment['repaired_here'] = self.model.NewBoolVar('Form%i_is_repaired_in_%s' % (form['id'], current_assignment['name']))
-
                 
+                 # is this form repaired prior to this assignment?
+                form_assignment['repaired_here'] = self.model.NewBoolVar('Form%i_is_repaired_in_%s' % (form['id'], current_assignment['name']))
                 form_assignment['moduloed_sum_until_now'] = self.model.NewIntVar(0, form['max_uses'], 'Modulo_Helper_Form%i %s' % (form['id'], current_assignment['name']))
                 sum_until_now = self.model.NewIntVar(0, self.max_sum, 'sum of all ticks that happened so far')
                 self.model.Add(sum_until_now == form['current_uses'] + sum([self.assignments[assignment_hlp_index]['form_assignments'][form['id']]['produced'] for assignment_hlp_index in range(assignment_id)]))
                 self.model.AddModuloEquality(form_assignment['moduloed_sum_until_now'], sum_until_now , form['max_uses'])
-                self.model.Add(form_assignment['moduloed_sum_until_now'] + current_assignment['ticks'] == form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'])
-                self.model.Add(form_assignment['moduloed_sum_until_now'] + current_assignment['ticks'] != form['max_uses']).OnlyEnforceIf(form_assignment['repaired_here'].Not())
-            
+               
+
                 
                
             # init form_used_in_oven
@@ -151,7 +161,7 @@ class ZFOptimizer():
                     self.model.Add(sum(form_changed_in_oven_abs) == 0).OnlyEnforceIf(current_oven_has_changed.Not())
                     #oven needs to be worked on if (1) its forms are exchanged
                 for f in range(len(self.forms)): #id_vs counter
-                    self.model.AddImplication(current_oven_needs_special_treetment.Not(), current_assignment['form_assignments'][f]['repaired_here'].Not())
+                    self.model.AddImplication(current_assignment['form_assignments'][f]['repaired_here'], current_oven_needs_special_treetment)
                 
 
 
@@ -169,12 +179,8 @@ class ZFOptimizer():
 
     def optimize(self):
         # Anzahl der Belegungen in denen etwas hergestellt wird minimieren - > Anzahl der Wechselungen der Belegung minimiern
-        # TODO: Wechseldauer eines Ofens mit einbeziehen 
-
-        self.model.Minimize(sum([sum(assignment['oven_needs_special_treatment']) for assignment in self.assignments]) + sum([assignment['ticks'] + assignment['used'] for assignment in self.assignments]))
-        #self.model.Minimize(sum([sum(assignment['oven_needs_special_treatment']) for assignment in self.assignments]) + sum([assignment['ticks']  for assignment in self.assignments]))
-        #old#self.model.Minimize(sum([sum(assignment['oven_has_changed']) for assignment in self.assignments]))
-
+        self.model.Minimize(sum([sum(assignment['oven_needs_special_treatment'][o['id']] * o['changeduration_sec'] for o in self.ovens) for assignment in self.assignments]) + sum([assignment['ticks'] * self.tick_cost + assignment['used'] for assignment in self.assignments]))
+        
 
         objective_printer = ObjectivePrinter()
         solver = cp_model.CpSolver() 
@@ -194,7 +200,9 @@ class ZFOptimizer():
                         "name": assignment['name'],
                         "used": True if solver.Value(assignment['used']) else False,
                         "ticks": solver.Value(assignment['ticks']),
-                        "assignments": [solver.Value(fa['oven']) for fa in assignment['form_assignments']]
+                        "assignments": [solver.Value(fa['oven'])  for fa in assignment['form_assignments']],
+                        "oven_has_changed": [True if solver.Value(oven_changed) else False for oven_changed in assignment['oven_has_changed']],
+                        "repaired_here": [True if solver.Value(fa['repaired_here']) else False for fa in assignment['form_assignments']]
                 }
                 if oa['used']:
                     print(assignment['name'])

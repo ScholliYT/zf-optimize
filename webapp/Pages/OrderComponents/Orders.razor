@@ -1,0 +1,44 @@
+﻿@page "/orders/{Year:int}"
+@using System.Globalization
+<h4>Bestellungen für @Year</h4>
+@if (OrderList != null)
+{
+    <div class="columns is-multiline">
+        @foreach (var order in OrderList)
+        {
+
+            <div class="column is-one-quarter">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div class="columns level">
+                            <div class="column level-left">
+                                @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(order.Date.Month)
+                            </div>
+                            <div class="column level-right">
+                                <button class="button is-danger" @onclick="() => DeleteOrder(order)">
+                                    <span class="icon">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <button class="button" @onclick="() => ManageProducts(order.Id)">Produkte bearbeiten</button>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (OrderList.Count < 12)
+        {
+            <div class="column is-one-quarter">
+                <button class="button" @onclick="AddMonth">Monatsbestellung hinzufügen</button>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h5>Lade...</h5>
+}
+<BackButton></BackButton>

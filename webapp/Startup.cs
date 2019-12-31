@@ -11,6 +11,7 @@ using webapp.Data;
 using System;
 using webapp.Data.Entities;
 using Blazored.Toast;
+using Blazored.Modal;
 
 namespace webapp
 {
@@ -68,6 +69,7 @@ namespace webapp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredToast();
+            services.AddBlazoredModal();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
         }
 
