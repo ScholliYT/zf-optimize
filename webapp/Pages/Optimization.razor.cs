@@ -1,4 +1,4 @@
-﻿using Blazored.Toast.Services;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -58,7 +58,21 @@ namespace webapp.Pages
         {
             try
             {
+                if (SelectedOrders.Count == 0)
+                {
+                    ToastService.ShowWarning($"Bitte wählen Sie min. eine Bestellung aus.");
+                    return;
+                }
+                
                 var ovens = await _zfContext.Ovens.ToListAsync();
+                if(ovens.Count == 0)
+                {
+                    ToastService.ShowWarning($"Bitte konfigurieren Sie min. einen Ofen.");
+                    return;
+                }
+
+
+                #region Gather data
 
                 // alle orderproducts der ausgewählten Orders
                 var orderProducts = await _zfContext.OrderProducts
