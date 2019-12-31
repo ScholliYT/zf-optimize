@@ -200,7 +200,9 @@ class ZFOptimizer():
                         "name": assignment['name'],
                         "used": True if solver.Value(assignment['used']) else False,
                         "ticks": solver.Value(assignment['ticks']),
-                        "assignments": [solver.Value(fa['oven']) for fa in assignment['form_assignments']]
+                        "assignments": [solver.Value(fa['oven'])  for fa in assignment['form_assignments']],
+                        "oven_has_changed": [True if solver.Value(oven_changed) else False for oven_changed in assignment['oven_has_changed']],
+                        "repaired_here": [True if solver.Value(fa['repaired_here']) else False for fa in assignment['form_assignments']]
                 }
                 if oa['used']:
                     print(assignment['name'])
