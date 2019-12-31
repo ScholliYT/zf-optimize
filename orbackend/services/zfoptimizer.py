@@ -28,7 +28,7 @@ class ZFOptimizer():
         # TODO: ausrechnen lassen# sum(order_requirements) erstmal
        
         self.max_assignment = sum(list(map(lambda f: f['required_amount'], self.forms))) # maximal erlaubte Anzahl von Belegungen
-        #self.max_assignment = 10
+        #self.max_assignment = 15
         self.max_required_amount = max(list(map(lambda f: f['required_amount'], self.forms))) # maximale geforderte Stückzahl einer spezifischen Form
         self.max_sum = self.max_assignment * 1000 #wieso? wie groß? Häää?
         # local vars
@@ -125,9 +125,9 @@ class ZFOptimizer():
                 current_assignment['oven_has_changed'].append(current_oven_has_changed)
                 current_assignment['oven_needs_special_treatment'].append(current_oven_needs_special_treetment)
                 self.model.AddImplication(current_oven_has_changed, current_oven_needs_special_treetment)
-               
+                
 
-                form_used_in_oven = current_assignment['form_used_in_oven'] #je nachdem, wie form_used_in_oven gespeichert wird - evtl. 3-Tupel mit assignment an erster Stelle?
+                form_used_in_oven = current_assignment['form_used_in_oven']
                
                 if assignment_id == 0: # first assignment
                     self.model.Add(sum([form_used_in_oven[(f,oven['id'])] for f in range(len(self.forms))]) > 0).OnlyEnforceIf(current_oven_has_changed)
