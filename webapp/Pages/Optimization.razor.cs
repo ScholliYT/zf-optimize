@@ -128,20 +128,23 @@ namespace webapp.Pages
                 var ovensIDMapping = MapIDsToStart_Oven(backend_ovens);
                 var formsIDMaping = MapIDsToStart_Form(backend_forms);
 
+                var requestData = new
+                {
+                    ovens = backend_ovens,
+                    forms = backend_forms
+                };
+
+                // @"{""ovens"":[{""id"":0,""size"":1,""changeduration_sec"":5}],""forms"":[{""id"":0,""required_amount"":15,""castingcell_demand"":1}]}";
+                string json = JsonSerializer.Serialize(requestData);
+
                 // POST
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    var data = new
-                    {
-                        ovens = backend_ovens,
-                        forms = backend_forms
-                    };
-
-                    // @"{""ovens"":[{""id"":0,""size"":1,""changeduration_sec"":5}],""forms"":[{""id"":0,""required_amount"":15,""castingcell_demand"":1}]}";
-                    string json = JsonSerializer.Serialize(data);
-
                     streamWriter.Write(json);
                 }
+
+                ToastService.ShowSuccess($"Optimierung mit {backend_ovens.Count} Öfen und {backend_forms.Count} Formen gestartet. Wenn das Ergebnis verfügbar ist wird dieses unten angezeigt. Der Vorgang kann max. 5 Minuten dauern.");
+                ToastService.ShowInfo($"JSON:\n{json}.");
 
                 // Get Response
                 httpWebRequest.ReadWriteTimeout = 360000; // 360 000 ms = 6 min
@@ -149,13 +152,13 @@ namespace webapp.Pages
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    var data = streamReader.ReadToEnd();
-                    if (data != null)
+                    var responseData = streamReader.ReadToEnd();
+                    if (responseData != null)
                     {
-                        Console.WriteLine(data);
-                        JSONFromAPI = data;
+                        Console.WriteLine(responseData);
+                        JSONFromAPI = responseData;
 
-                        Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(data);
+                        Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(responseData);
                         // TODO: Form Reperaturen herausziehen
 
                         // IDs wieder zurück mappen

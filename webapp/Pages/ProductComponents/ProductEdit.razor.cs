@@ -60,7 +60,7 @@ namespace webapp.Pages.ProductComponents
             ProductForms = await _zfContext.ProductForms.Where(pf => pf.ProductId == Product.Id).Include(pf => pf.Product).Include(pf => pf.Form).ToListAsync();
             StateHasChanged();
         }
-
+       
         protected async Task Save()
         {
             if (CreationMode)
