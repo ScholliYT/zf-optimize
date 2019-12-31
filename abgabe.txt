@@ -25,7 +25,8 @@ Seiten der https://github.com/ScholliYT/zf-optimize/tree/master/webapp/Pages
 Models: https://github.com/ScholliYT/zf-optimize/tree/develop/webapp/Data/Entities
 Business logic: https://github.com/ScholliYT/zf-optimize/tree/ortools/webapp/Pages
 Optimierungsalgorithmus: https://github.com/ScholliYT/zf-optimize/blob/ortools/orbackend/services/zfoptimizer.py
-Optimization Backend Test: https://github.com/ScholliYT/zf-optimize/wiki/Optimization-Backend
+Optimization Backend Guide: https://github.com/ScholliYT/zf-optimize/wiki/Optimization-Backend
+Frontend Guide: https://github.com/ScholliYT/zf-optimize/wiki/Frontend
 
 
 Da uns in diesem Projekt der zeitliche Rahmen beschränkte, werden wir wahrscheinlich spaßeshalber eine umfassendere Lösung erstellen.
