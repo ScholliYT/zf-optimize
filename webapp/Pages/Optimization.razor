@@ -1,0 +1,95 @@
+﻿@page "/optimization"
+
+
+<nav class="panel">
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h4>Optimierung</h4>
+            </div>
+            <div class="column" style="display: inline-table;">
+                <button class="button level-right" @onclick="StartOptimization">
+                    <span class="icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </span>
+                    <span>Optimierung ausführen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-heading">
+        <div class="columns">
+            <div class="column level-left">
+                <h5>Bestellungen</h5>
+                <p>Ausgewählte Bestellungen: @SelectedOrders?.Count</p>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        @if (Orders == null)
+        {
+        <p><em>Lade...</em></p>
+        }
+        else
+        {
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Datum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Orders)
+                {
+                <tr>
+                    <td class="has-text-centered is-vcentered" width="50">
+                        @if (SelectedOrders?.Contains(order) ?? false)
+                        {
+                        // draw checkbox thats allready checked
+                        <input type="checkbox" class="form-check-input" id="itemchecked" checked @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
+                        }
+                        else
+                        {
+                        <input type="checkbox" class="form-check-input" id="itemchecked" @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
+                        }
+                    </td>
+                    <td>@order.Id</td>
+                    <td>@order.DateDisplay</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+    <p>@JSONFromAPI</p>
+    <div class="panel-block">
+        @if (Assignments == null)
+        {
+        <p><em>Noch keine Daten...</em></p>
+        }
+        else
+        {
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Vorgänge mit dieser Belegung</th>
+                    <th>Belegung</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var assignment in Assignments)
+                {
+                <tr>
+                    <td>@assignment.Name</td>
+                    <td>@assignment.Ticks</td>
+                    <td>@(string.Join(", ", assignment.FormAssignments))</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</nav>
