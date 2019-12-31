@@ -9,6 +9,8 @@ namespace webapp.Data.Entities
         [Key] 
         [JsonPropertyName("id")]
         public int Id { get; set; }
+
+        public string Name { get; set; }
         
         [Range(0,int.MaxValue, ErrorMessage = "{0} muss zwischen {2} und {1} sein")]
         [JsonPropertyName("current_uses")]
@@ -23,22 +25,9 @@ namespace webapp.Data.Entities
         public float CastingCells { get; set; }
 
         [JsonIgnore]
-        public double Wear
-        {
-            get
-            {
-                return (double)Actions / ActionsMax;
-            }
-        }
+        public double Wear => (double)Actions / ActionsMax;
 
         [JsonIgnore]
-        public string WearDisplay
-        {
-            get
-            {
-                return string.Format("{0:0.00}%", Wear*100d);
-            }
-        }
-
+        public string WearDisplay => $"{Wear * 100d:0.00}%";
     }
 }
