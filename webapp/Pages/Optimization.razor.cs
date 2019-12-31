@@ -78,14 +78,17 @@ namespace webapp.Pages
                 var orderProducts = await _zfContext.OrderProducts
                     .Where(op => op.Amount > 0)
                     .Where(op => SelectedOrders.Select(o => o.Id).Contains(op.OrderId))
-                    .Include(op => new {op.Order, op.Product})
+                    .Include(op => op.Product)
+                    .Include(op => op.Order)
                     .ToListAsync();
                 var products_used = orderProducts.Select(op => op.Product).Distinct().ToList();
 
                 // genutze Produktforms
                 var productForms = await _zfContext.ProductForms
+                    .Where(pf => pf.Amount > 0)
                     .Where(pf => products_used.Select(p => p.Id).Contains(pf.ProductId))
-                    .Include(pf => new {pf.Form, pf.Product})
+                    .Include(pf => pf.Product)
+                    .Include(pf => pf.Form)
                     .Distinct()
                     .ToListAsync();
                 var forms_used = productForms.Select(pf => pf.Form).Distinct().ToList();
@@ -135,7 +138,7 @@ namespace webapp.Pages
                     };
 
                     // @"{""ovens"":[{""id"":0,""size"":1,""changeduration_sec"":5}],""forms"":[{""id"":0,""required_amount"":15,""castingcell_demand"":1}]}";
-                    var json = JsonSerializer.Serialize(data);
+                    string json = JsonSerializer.Serialize(data);
 
                     streamWriter.Write(json);
                 }
@@ -144,11 +147,13 @@ namespace webapp.Pages
                 httpWebRequest.ReadWriteTimeout = 360000; // 360 000 ms = 6 min
                 httpWebRequest.Timeout = 360000; // 360 000 ms = 6 min
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using var streamReader = new StreamReader(httpResponse.GetResponseStream());
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var data = streamReader.ReadToEnd();
-                    Console.WriteLine(data);
-                    JSONFromAPI = data;
+                    if (data != null)
+                    {
+                        Console.WriteLine(data);
+                        JSONFromAPI = data;
 
                         Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(data);
                         // TODO: Form Reperaturen herausziehen
