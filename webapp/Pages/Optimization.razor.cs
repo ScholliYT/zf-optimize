@@ -21,8 +21,6 @@ namespace webapp.Pages
         [Inject] private protected NavigationManager NavigationManager { get; set; }
         [Inject] protected IToastService ToastService { get; set; }
 
-        protected string JSONFromAPI { get; private set; }
-
         protected List<Order> Orders;
         protected HashSet<Order> SelectedOrders;
 
@@ -137,14 +135,15 @@ namespace webapp.Pages
                 // @"{""ovens"":[{""id"":0,""size"":1,""changeduration_sec"":5}],""forms"":[{""id"":0,""required_amount"":15,""castingcell_demand"":1}]}";
                 string json = JsonSerializer.Serialize(requestData);
 
+                ToastService.ShowSuccess($"Optimierung mit {backend_ovens.Count} Öfen und {backend_forms.Count} Formen gestartet. Wenn das Ergebnis verfügbar ist wird dieses unten angezeigt. Der Vorgang kann max. 5 Minuten dauern.");
+                ToastService.ShowInfo($"Requst JSON:\n{json}.");
+
                 // POST
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     streamWriter.Write(json);
                 }
 
-                ToastService.ShowSuccess($"Optimierung mit {backend_ovens.Count} Öfen und {backend_forms.Count} Formen gestartet. Wenn das Ergebnis verfügbar ist wird dieses unten angezeigt. Der Vorgang kann max. 5 Minuten dauern.");
-                ToastService.ShowInfo($"JSON:\n{json}.");
 
                 // Get Response
                 httpWebRequest.ReadWriteTimeout = 360000; // 360 000 ms = 6 min
@@ -155,8 +154,9 @@ namespace webapp.Pages
                     var responseData = streamReader.ReadToEnd();
                     if (responseData != null)
                     {
+
                         Console.WriteLine(responseData);
-                        JSONFromAPI = responseData;
+                        ToastService.ShowInfo($"Response JSON:\n{responseData}.");
 
                         Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(responseData);
                         // TODO: Form Reperaturen herausziehen
@@ -164,7 +164,7 @@ namespace webapp.Pages
                         // IDs wieder zurück mappen
                         foreach (BackendAssignment assignment in Assignments)
                         {
-                            assignment.FormAssignments = assignment.FormAssignments.Select(fa => formsIDMaping[fa]).ToList();
+                            assignment.FormAssignments = assignment.FormAssignments.Select(fa => ovensIDMapping[fa]).ToList();
                         }
 
                         StateHasChanged();
