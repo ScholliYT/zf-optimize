@@ -9,6 +9,6 @@ namespace webapp.Data.Entities.Backend
     public class BackendOven : Oven
     {
         [JsonPropertyName("size")]
-        public double Backend_CastingCellAmount { get => CastingCellAmount * CONSTS.SizeScalingFactor; }
+        public int Backend_CastingCellAmount { get => (int)CastingCellAmount * CONSTS.SizeScalingFactor; }
     }
 }
