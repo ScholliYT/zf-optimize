@@ -41,7 +41,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in Orders)
+                @foreach (var order in Orders.OrderBy(o => o.Date))
                 {
                 <tr>
                     <td class="has-text-centered is-vcentered" width="50">
