@@ -19,6 +19,7 @@ namespace webapp.Pages.ProductComponents
         [Parameter] public int? Id { get; set; }
 
         protected Product Product { get; private set; }
+        protected List<ProductForm> ProductForms { get; private set; }
         protected bool LoadFailed { get; private set; }
         protected bool NotFound { get; private set; }
         protected bool CreationMode { get; private set; }
@@ -32,17 +33,29 @@ namespace webapp.Pages.ProductComponents
                 if (CreationMode)
                 {
                     Product = new Product();
+                    ProductForms = new List<ProductForm>();
                 }
                 else
                 {
                     Product = await _zfContext.Products.FirstOrDefaultAsync(p => p.Id == Id);
                     NotFound = Product == null;
+
+                    if (!NotFound)
+                    {
+                        await LoadProductForms();
+                    }
                 }
             }
             catch (Exception)
             {
                 LoadFailed = true;
             }
+        }
+
+        private async Task LoadProductForms()
+        {
+            ProductForms = await _zfContext.ProductForms.Include(pf => pf.Product).Include(pf => pf.Form).ToListAsync();
+            StateHasChanged();
         }
 
         protected async Task Save()
@@ -52,9 +65,26 @@ namespace webapp.Pages.ProductComponents
                 _zfContext.Products.Add(Product);
             }
 
+            _zfContext.ProductForms.AddRange(ProductForms);
             await _zfContext.SaveChangesAsync();
             NavigationManager.NavigateTo("/products");
             ToastService.ShowSuccess($"Produkt {Product.Id} {(CreationMode?"erstellt":"geändert")}.");
+        }
+
+        protected void AddProductForm()
+        {
+            ProductForms.Add(new ProductForm());
+            StateHasChanged();
+        }
+
+        public void EditProductForm(ProductForm productForm)
+        {
+        }
+
+        public async Task DeleteProductForm(ProductForm productForm)
+        {
+            ProductForms.Remove(productForm);
+            await LoadProductForms();
         }
     }
 }

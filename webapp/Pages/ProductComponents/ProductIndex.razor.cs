@@ -46,6 +46,8 @@ namespace webapp.Pages.ProductComponents
                     Price = (decimal)(Math.Round(random.NextDouble() * 10f, 2)),
                 };
 
+                // TODO: Generate random ProductForms
+
                 _zfContext.Products.Add(product);
                 await _zfContext.SaveChangesAsync();
                 await LoadProducts();
