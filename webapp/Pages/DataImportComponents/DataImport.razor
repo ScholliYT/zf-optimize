@@ -1,8 +1,12 @@
 ﻿@page "/import"
-@if (!TaskFinished)
+@if (!TaskFinished && !Loading)
 {
     <h5 class="is-danger">Vorsicht! Alle bestehenden Daten werden gelöscht!</h5>
     <InputFile OnChange="HandleFileUpload"/>
+}
+else if (Loading && !TaskFinished)
+{
+    <h5>Lade...</h5>
 }
 else
 {

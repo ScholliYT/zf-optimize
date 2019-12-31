@@ -16,9 +16,11 @@ namespace webapp.Pages.DataImportComponents
     {
         [Inject] private protected ZFContext zfContext { get; set; }
         private protected bool TaskFinished { get; set; }
+        private protected bool Loading { get; set; }
 
         private protected async Task HandleFileUpload(IFileListEntry[] files)
         {
+            Loading = true;
             List<Form>? importedForms;
             List<Product>? importedProducts;
             var file = files.FirstOrDefault();
@@ -29,6 +31,7 @@ namespace webapp.Pages.DataImportComponents
 
                 if (file.Type == @"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 {
+                    StateHasChanged();
                     var excel = new ExcelPackage(ms);
                     var worksheets = excel.Workbook.Worksheets.AsEnumerable().ToList();
                     zfContext.RemoveRange(zfContext.ProductForms);
@@ -43,6 +46,7 @@ namespace webapp.Pages.DataImportComponents
                     await AssociateProductForms();
                     await FindOrders();
                     await zfContext.SaveChangesAsync();
+                    Loading = false;
                     TaskFinished = true;
                     StateHasChanged();
 
