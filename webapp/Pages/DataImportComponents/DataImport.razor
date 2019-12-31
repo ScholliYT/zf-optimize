@@ -1,0 +1,10 @@
+﻿@page "/import"
+@if (!TaskFinished)
+{
+    <h5 class="is-danger">Vorsicht! Alle bestehenden Daten werden gelöscht!</h5>
+    <InputFile OnChange="HandleFileUpload"/>
+}
+else
+{
+    <h5>Daten importiert.</h5>
+}
