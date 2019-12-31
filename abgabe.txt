@@ -27,8 +27,9 @@ Business logic: https://github.com/ScholliYT/zf-optimize/tree/ortools/webapp/Pag
 Optimierungsalgorithmus: https://github.com/ScholliYT/zf-optimize/blob/ortools/orbackend/services/zfoptimizer.py
 Optimization Backend Test: https://github.com/ScholliYT/zf-optimize/wiki/Optimization-Backend
 
-Da uns in diesem Projekt der zeitliche Rahmen beschränkte, werden wir wahrscheinlich spaßeshalber eine umfassendere Lösung erstellen.
 
+Da uns in diesem Projekt der zeitliche Rahmen beschränkte, werden wir wahrscheinlich spaßeshalber eine umfassendere Lösung erstellen.
+Somit ist lediglich der Import der, von euch bereitgestellten, Excel-Tabelle möglich.
 
 
 
