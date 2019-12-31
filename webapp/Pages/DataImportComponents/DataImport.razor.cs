@@ -42,6 +42,7 @@ namespace webapp.Pages.DataImportComponents
                     await FindProducts();
                     await zfContext.SaveChangesAsync();
                     await AssociateProductForms();
+                    await FindOrders();
                     await zfContext.SaveChangesAsync();
                     TaskFinished = true;
                     StateHasChanged();
@@ -130,6 +131,35 @@ namespace webapp.Pages.DataImportComponents
                                     Product = product,
                                     ProductId = product.Id
                                 });
+                            }
+                        }
+                    }
+
+                    async Task FindOrders()
+                    {
+                        var ordersheets = worksheets.Where(w => w.Name.Contains("Bestellungen")).ToList();
+
+                        foreach (var ordersheet in ordersheets)
+                        {
+                            var year = int.Parse(ordersheet.Name.Split(' ')[2]);
+
+                            var productrows = ordersheet.Cells.Where(c => c.Text.StartsWith("Produkt Nr. ")).ToList();
+
+                            foreach (var row in productrows.Select(x => int.Parse(x.Address.Substring(1))))
+                            {
+                                for (int i = 1; i <= 12; i++)
+                                {
+                                    var order = await zfContext.Orders.AddAsync(new Order
+                                    {
+                                        Date = new DateTime(year, i, 1)
+                                    });
+                                    await zfContext.OrderProducts.AddAsync(new OrderProduct
+                                    {
+                                        Order = order.Entity,
+                                        Product = await zfContext.Products.SingleAsync(p => p.Name == ordersheet.GetValue<string>(row, 3)),
+                                        Amount = ordersheet.GetValue<int>(row, i+3)
+                                    });
+                                }
                             }
                         }
                     }
