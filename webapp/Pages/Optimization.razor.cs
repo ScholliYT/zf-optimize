@@ -1,4 +1,4 @@
-using Blazored.Toast.Services;
+﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -93,6 +93,28 @@ namespace webapp.Pages
                     .ToListAsync();
                 var forms_used = productForms.Select(pf => pf.Form).Distinct().ToList();
 
+                // Anzahl der Stück je Form berechnen
+                var formamounts_floats = new Dictionary<Form, double>();
+                foreach (var op in orderProducts)
+                {
+                    foreach (var pf in productForms.Where(pf => pf.Product == op.Product))
+                    {
+                        if (!formamounts_floats.ContainsKey(pf.Form))
+                        {
+                            formamounts_floats.Add(pf.Form, 0);
+                        }
+                        formamounts_floats[pf.Form] += op.Amount * pf.Amount; // Stück * Formen pro Stück
+                    }
+                }
+
+                // Wieder in ints konvertieren
+                var formamounts = new Dictionary<Form, int>();
+                foreach (var faf in formamounts_floats)
+                {
+                    formamounts.Add(faf.Key, (int)faf.Value);
+                }
+                #endregion Gather Data
+
                 string baseUrl = "http://orbackend:5000/optimize";
 
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(baseUrl);
@@ -102,28 +124,6 @@ namespace webapp.Pages
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     var backend_ovens = ovens.Select(oven => BackendOven.MakeBackendOven(oven)).ToList();
-
-                    // Anzahl der Stück je Form berechnen
-                    var formamounts_floats = new Dictionary<Form, double>();
-                    foreach (var op in orderProducts)
-                    {
-                        foreach (var pf in productForms.Where(pf => pf.Product == op.Product))
-                        {
-                            if(!formamounts_floats.ContainsKey(pf.Form))
-                            {
-                                formamounts_floats.Add(pf.Form, 0);
-                            }
-                            formamounts_floats[pf.Form] += op.Amount * pf.Amount;
-                        }
-                    }
-
-                    // Wieder in ints konvertieren
-                    var formamounts = new Dictionary<Form, int>();
-                    foreach (var faf in formamounts_floats)
-                    {
-                        formamounts.Add(faf.Key, (int)faf.Value);
-                    }
-
                     var backend_forms = forms_used.Select(form => BackendForm.MakeBackendForm(form, formamounts[form])).ToList();
 
                     var data = new
@@ -148,7 +148,7 @@ namespace webapp.Pages
                         JSONFromAPI = data;
 
                         Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(data);
-                        // TODO: Wieder um Size Scale faktor runterskallieren
+                        // TODO: Form reperaturen herausziehen
                         StateHasChanged();
                     }
                 }

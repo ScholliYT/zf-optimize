@@ -10,8 +10,15 @@ namespace webapp.Data.Entities.Backend
     {
         public static BackendForm MakeBackendForm(Form form, int requiredAmount)
         {
-            var f = (BackendForm)form;
-            f.Backend_RequiredAmount = requiredAmount;
+            var f = new BackendForm()
+            {
+                Id = form.Id,
+                Name = form.Name,
+                Actions = form.Actions,
+                ActionsMax = form.ActionsMax,
+                CastingCells = form.CastingCells,
+                Backend_RequiredAmount = requiredAmount
+            };
             return f;
         }
 

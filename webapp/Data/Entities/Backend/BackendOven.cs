@@ -10,7 +10,12 @@ namespace webapp.Data.Entities.Backend
     {
         public static BackendOven MakeBackendOven(Oven oven)
         {
-            return (BackendOven)oven;
+            return new BackendOven()
+            {
+                Id = oven.Id,
+                CastingCellAmount = oven.CastingCellAmount,
+                ChangeDuration = oven.ChangeDuration
+            };
         }
 
         [JsonPropertyName("size")]
