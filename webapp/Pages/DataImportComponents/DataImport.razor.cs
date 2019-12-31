@@ -111,8 +111,6 @@ namespace webapp.Pages.DataImportComponents
                                     .Select(c => c.Value.ToString()).ToArray()
                             }).ToList();
 
-                        ;
-
                         foreach (var amount in amounts)
                         {
                             var product =
