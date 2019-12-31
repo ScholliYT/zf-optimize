@@ -28,67 +28,73 @@
     <div class="panel-block">
         @if (Orders == null)
         {
-        <p><em>Lade...</em></p>
+            <p><em>Lade...</em></p>
         }
         else
         {
-        <table class="table is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>ID</th>
-                    <th>Datum</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var order in Orders.OrderBy(o => o.Date))
-                {
-                <tr>
-                    <td class="has-text-centered is-vcentered" width="50">
-                        @if (SelectedOrders?.Contains(order) ?? false)
-                        {
-                        // draw checkbox thats allready checked
-                        <input type="checkbox" class="form-check-input" id="itemchecked" checked @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
-                        }
-                        else
-                        {
-                        <input type="checkbox" class="form-check-input" id="itemchecked" @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
-                        }
-                    </td>
-                    <td>@order.Id</td>
-                    <td>@order.DateDisplay</td>
-                </tr>
-                }
-            </tbody>
-        </table>
+            <table class="table is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>Datum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Orders.OrderBy(o => o.Date))
+                    {
+                        <tr>
+                            <td class="has-text-centered is-vcentered" width="50">
+                                @if (SelectedOrders?.Contains(order) ?? false)
+                                {
+                                    // draw checkbox thats allready checked
+                                    <input type="checkbox" class="form-check-input" id="itemchecked" checked @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="form-check-input" id="itemchecked" @onchange=@(newState => UpdateOrderCheckedState(order, (bool)newState.Value)) />
+                                }
+                            </td>
+                            <td>@order.Id</td>
+                            <td>@order.DateDisplay</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
     </div>
     <div class="panel-block">
         @if (Assignments == null)
         {
-        <p><em>Noch keine Daten...</em></p>
+            <p><em>Noch keine Daten...</em></p>
         }
         else
         {
-        <table class="table is-striped is-hoverable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Vorgänge mit dieser Belegung</th>
-                    <th>Belegung</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var assignment in Assignments)
-                {
-                <tr>
-                    <td>@assignment.Name</td>
-                    <td>@assignment.Ticks</td>
-                    <td>@(string.Join(", ", assignment.FormAssignments))</td>
-                </tr>
-                }
-            </tbody>
-        </table>
+            <table class="table is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Vorgänge mit dieser Belegung</th>
+                        <th>Belegung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var assignment in Assignments)
+                    {
+                        <tr>
+                            <td>@assignment.Name</td>
+                            <td>@assignment.Ticks</td>
+                            <td>
+                                @foreach (var oven in assignment.OvenToFormAssignments.Keys.OrderBy(o => o.Id))
+                                {
+                                    @($"OfenID {oven.Id}: " + string.Join(", ", assignment.OvenToFormAssignments[oven].Select(f => f.Name ?? $"F{f.Id}")))
+                                    <br />
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
     </div>
 </nav>
