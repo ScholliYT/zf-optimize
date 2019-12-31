@@ -55,20 +55,20 @@ namespace webapp.Pages.DataImportComponents
                                         c.Value.ToString().StartsWith('F')).Select(c => c.Address).ToList();
                         if (formsAdresses != null)
                             await zfContext.Forms.AddRangeAsync(from fa in formsAdresses
-                                select int.Parse(fa.Substring(1, fa.Length - 1))
+                                                                select int.Parse(fa.Substring(1, fa.Length - 1))
                                 into row
-                                let anzBisher = forms?.GetValue<int>(row, 2)
-                                let anzMax = forms?.GetValue<int>(row, 3)
-                                let gieszBedarf = forms?.GetValue<float>(row, 4)
-                                let name = forms?.GetValue<string>(row, 1)
-                                orderby row
-                                select new Form
-                                {
-                                    Actions = anzBisher.GetValueOrDefault(),
-                                    ActionsMax = anzMax.GetValueOrDefault(),
-                                    CastingCells = gieszBedarf.GetValueOrDefault(),
-                                    Name = name
-                                });
+                                                                let anzBisher = forms?.GetValue<int>(row, 2)
+                                                                let anzMax = forms?.GetValue<int>(row, 3)
+                                                                let gieszBedarf = forms?.GetValue<float>(row, 4)
+                                                                let name = forms?.GetValue<string>(row, 1)
+                                                                orderby row
+                                                                select new Form
+                                                                {
+                                                                    Actions = anzBisher.GetValueOrDefault(),
+                                                                    ActionsMax = anzMax.GetValueOrDefault(),
+                                                                    CastingCells = gieszBedarf.GetValueOrDefault(),
+                                                                    Name = name
+                                                                });
                     }
 
                     async Task FindProducts()
@@ -79,12 +79,12 @@ namespace webapp.Pages.DataImportComponents
                                 .Select(c => c.Address).ToList();
                         if (productsAdresses != null)
                             await zfContext.Products.AddRangeAsync(from pa in productsAdresses
-                                select int.Parse(pa.Substring(1, pa.Length - 1))
+                                                                   select int.Parse(pa.Substring(1, pa.Length - 1))
                                 into row
-                                let name = products?.GetValue<string>(row, 3)
-                                orderby row
-                                select new Product
-                                    {Name = name});
+                                                                   let name = products?.GetValue<string>(row, 3)
+                                                                   orderby row
+                                                                   select new Product
+                                                                   { Name = name });
                     }
 
                     async Task AssociateProductForms()
@@ -97,17 +97,17 @@ namespace webapp.Pages.DataImportComponents
                             .Select(c => c.Address.Substring(1, c.Address.Length - 1)).ToList();
 
                         var amounts = (from pf in productAdresses
-                            select int.Parse(pf)
+                                       select int.Parse(pf)
                             into row
-                            let productNr = productforms.GetValue<int>(row, 1)
-                            orderby row
-                            select new
-                            {
-                                id = productNr,
-                                amounts = productforms.Cells.Where(c =>
-                                        c.Address.Substring(1) == row.ToString() && !c.Address.StartsWith('A'))
-                                    .Select(c => c.Value.ToString()).ToArray()
-                            }).ToList();
+                                       let productNr = productforms.GetValue<int>(row, 1)
+                                       orderby row
+                                       select new
+                                       {
+                                           id = productNr,
+                                           amounts = productforms.Cells.Where(c =>
+                                                   c.Address.Substring(1) == row.ToString() && !c.Address.StartsWith('A'))
+                                               .Select(c => c.Value.ToString()).ToArray()
+                                       }).ToList();
 
                         foreach (var amount in amounts)
                         {
@@ -138,13 +138,14 @@ namespace webapp.Pages.DataImportComponents
 
                             var productrows = ordersheet.Cells.Where(c => c.Text.StartsWith("Produkt Nr. ")).ToList();
 
-                            foreach (var row in productrows.Select(x => int.Parse(x.Address.Substring(1))))
-                                for (var i = 1; i <= 12; i++)
+                            for (var i = 1; i <= 12; i++)
+                            {
+                                var order = await zfContext.Orders.AddAsync(new Order
                                 {
-                                    var order = await zfContext.Orders.AddAsync(new Order
-                                    {
-                                        Date = new DateTime(year, i, 1)
-                                    });
+                                    Date = new DateTime(year, i, 1)
+                                });
+                                foreach (var row in productrows.Select(x => int.Parse(x.Address.Substring(1))))
+                                {
                                     await zfContext.OrderProducts.AddAsync(new OrderProduct
                                     {
                                         Order = order.Entity,
@@ -153,10 +154,12 @@ namespace webapp.Pages.DataImportComponents
                                         Amount = ordersheet.GetValue<int>(row, i + 3)
                                     });
                                 }
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 }
