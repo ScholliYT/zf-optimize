@@ -15,16 +15,16 @@ class HelloWorld(Resource):
 
 """ Model for documenting the API """
 oven_model = api.model('Oven', {
-'id': fields.Integer,
-'size': fields.Integer,
-'changeduration_sec': fields.Integer,
+'id': fields.Integer(required=True),
+'size': fields.Integer(required=True),
+'changeduration_sec': fields.Integer(required=True),
 })
 form_model = api.model('Form', {
-'id': fields.Integer,
-'required_amount': fields.Integer,
-'castingcell_demand': fields.Integer,
-'current_uses': fields.Integer,
-'max_uses': fields.Integer,
+'id': fields.Integer(required=True),
+'required_amount': fields.Integer(required=True),
+'castingcell_demand': fields.Integer(required=True),
+'current_uses': fields.Integer(required=True),
+'max_uses': fields.Integer(required=True),
 })
 
 optimization_request = api.model("Optimization", {
