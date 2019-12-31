@@ -63,9 +63,9 @@ namespace webapp.Pages
                     ToastService.ShowWarning($"Bitte wählen Sie min. eine Bestellung aus.");
                     return;
                 }
-                
+
                 var ovens = await _zfContext.Ovens.ToListAsync();
-                if(ovens.Count == 0)
+                if (ovens.Count == 0)
                 {
                     ToastService.ShowWarning($"Bitte konfigurieren Sie min. einen Ofen.");
                     return;
@@ -121,11 +121,16 @@ namespace webapp.Pages
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 
+
+                var backend_ovens = ovens.Select(oven => BackendOven.MakeBackendOven(oven)).ToList();
+                var backend_forms = forms_used.Select(form => BackendForm.MakeBackendForm(form, formamounts[form])).ToList();
+
+                var ovensIDMapping = MapIDsToStart_Oven(backend_ovens);
+                var formsIDMaping = MapIDsToStart_Form(backend_forms);
+
+                // POST
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    var backend_ovens = ovens.Select(oven => BackendOven.MakeBackendOven(oven)).ToList();
-                    var backend_forms = forms_used.Select(form => BackendForm.MakeBackendForm(form, formamounts[form])).ToList();
-
                     var data = new
                     {
                         ovens = backend_ovens,
@@ -138,6 +143,9 @@ namespace webapp.Pages
                     streamWriter.Write(json);
                 }
 
+                // Get Response
+                httpWebRequest.ReadWriteTimeout = 360000; // 360 000 ms = 6 min
+                httpWebRequest.Timeout = 360000; // 360 000 ms = 6 min
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
@@ -148,7 +156,14 @@ namespace webapp.Pages
                         JSONFromAPI = data;
 
                         Assignments = JsonSerializer.Deserialize<List<BackendAssignment>>(data);
-                        // TODO: Form reperaturen herausziehen
+                        // TODO: Form Reperaturen herausziehen
+
+                        // IDs wieder zurück mappen
+                        foreach (BackendAssignment assignment in Assignments)
+                        {
+                            assignment.FormAssignments = assignment.FormAssignments.Select(fa => formsIDMaping[fa]).ToList();
+                        }
+
                         StateHasChanged();
                     }
                 }
@@ -161,6 +176,38 @@ namespace webapp.Pages
             {
                 ToastService.ShowError($"Fehler bei der Verbindung zur Backend API.");
             }
+        }
+
+        /// <summary>
+        /// Maps IDs of the Form (123, 200, 303...) to (0,1,2...) in place
+        /// </summary>
+        /// <param name="forms"></param>
+        /// <returns>Mapping (old, new)</returns>
+        private static Dictionary<int, int> MapIDsToStart_Form(List<BackendForm> forms)
+        {
+            Dictionary<int, int> idmapping = new Dictionary<int, int>();
+            for (int i = 0; i < forms.Count; i++)
+            {
+                idmapping.Add(i, forms[i].Id);
+                forms[i].Id = i;
+            }
+            return idmapping;
+        }
+
+        /// <summary>
+        /// Maps IDs of the Oven (123, 200, 303...) to (0,1,2...) in place
+        /// </summary>
+        /// <param name="ovens"></param>
+        /// <returns>Mapping (old, new)</returns>
+        private static Dictionary<int, int> MapIDsToStart_Oven(List<BackendOven> ovens)
+        {
+            Dictionary<int, int> idmapping = new Dictionary<int, int>();
+            for (int i = 0; i < ovens.Count; i++)
+            {
+                idmapping.Add(i, ovens[i].Id);
+                ovens[i].Id = i;
+            }
+            return idmapping;
         }
     }
 }
