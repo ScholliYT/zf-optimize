@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Configuration;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using webapp.Data.Entities;
 
 namespace webapp.Data
@@ -10,7 +14,6 @@ namespace webapp.Data
         public ZFContext(DbContextOptions<ZFContext> options) : base(options)
         {
         }
-
         public DbSet<Form> Forms { get; set; }
 
         public DbSet<Order> Orders { get; set; }
@@ -22,8 +25,8 @@ namespace webapp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderProduct>().HasKey(o => new {o.OrderId, o.ProductId});
-            modelBuilder.Entity<ProductForm>().HasKey(o => new {o.ProductId, o.FormId});
+            modelBuilder.Entity<OrderProduct>().HasKey(o => new { o.OrderId, o.ProductId });
+            modelBuilder.Entity<ProductForm>().HasKey(o => new { o.ProductId, o.FormId });
         }
     }
 }

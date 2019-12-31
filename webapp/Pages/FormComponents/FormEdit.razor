@@ -27,6 +27,12 @@
                     <ValidationSummary />
 
                     <div class="field">
+                        <label class="label" for="Actions">Name:</label>
+                        <div class="control">
+                            <InputText Class="input" @bind-Value="@Form.Name" />
+                        </div>
+                    </div>
+                    <div class="field">
                         <label class="label" for="Actions">Actions:</label>
                         <div class="control">
                             <InputNumber Class="input" @bind-Value="@Form.Actions" />

@@ -35,6 +35,9 @@ namespace webapp.Migrations
                     b.Property<float>("CastingCells")
                         .HasColumnType("real");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Forms");

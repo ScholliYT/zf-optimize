@@ -1,0 +1,176 @@
+// Calculated OUTPUT FROM optimization
+
+[
+  {
+    "name": "Assignment0",
+    "used": true,
+    "ticks": 12,
+    "assigments": [
+      0, // 1
+      1, // 2
+      3, // 3
+      2 // 4
+    ],
+    "oven_has_changed": [ // lenght of len(ovens)
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "Assignment1",
+    "used": true,
+    "ticks": 3,
+    "assigments": [
+      1, // 5
+      -1, // 6
+      -1, // 7
+      2
+    ],
+    "oven_has_changed": [ // lenght of len(ovens)
+      true, // oven 0 changes from form 0 to nothing
+      true, // oven 1 changes from form 1 to form 0
+      false, // oven 2 still contains form 3
+      true // oven 3 changes from form 2 to nothing
+    ]
+  },
+  {
+    "name": "Assignment2",
+    "used": true,
+    "ticks": 5,
+    "assigments": [
+      -1, // 8
+      -1,
+      3, // 9
+      2
+    ],
+    "oven_has_changed": [ // lenght of len(ovens)
+      false, // oven 0 still is not used
+      true, // oven 1 changes from form 0 to nothing
+      false, // oven 2 still contains form 3
+      true // oven 3 changes from form nothing to 2
+    ]
+  }
+]
+
+
+
+
+
+[
+  {
+    "name": "Assignment0",
+    "used": true,
+    "ticks": 5,
+    "assigments": [
+      -1,
+      -1,
+      3,
+      2
+    ]
+  },
+  {
+    "name": "Assignment1",
+    "used": true,
+    "ticks": 12,
+    "assigments": [
+      0,
+      1,
+      3,
+      2
+    ]
+  },
+  {
+    "name": "Assignment2",
+    "used": true,
+    "ticks": 3,
+    "assigments": [
+      0,
+      -1,
+      -1,
+      2
+    ]
+  }
+]
+
+
+
+
+
+[
+  {
+    "name": "Assignment0",
+    "used": true,
+    "ticks": 3,
+    "assigments": [
+      3,
+      -1,
+      -1,
+      3
+    ]
+  },
+  {
+    "name": "Assignment1",
+    "used": true,
+    "ticks": 12,
+    "assigments": [
+      0,
+      1,
+      3,
+      2
+    ]
+  },
+  {
+    "name": "Assignment2",
+    "used": true,
+    "ticks": 5,
+    "assigments": [
+      -1,
+      -1,
+      3,
+      2
+    ]
+  }
+]
+
+
+
+
+
+
+[
+  {
+    "name": "Assignment0",
+    "used": true,
+    "ticks": 3,
+    "assigments": [
+      3,
+      -1,
+      -1,
+      3
+    ]
+  },
+  {
+    "name": "Assignment1",
+    "used": true,
+    "ticks": 5,
+    "assigments": [
+      -1,
+      -1,
+      3,
+      2
+    ]
+  },
+  {
+    "name": "Assignment2",
+    "used": true,
+    "ticks": 12,
+    "assigments": [
+      0,
+      1,
+      3,
+      2
+    ]
+  }
+]

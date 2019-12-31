@@ -31,17 +31,17 @@ namespace webapp
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(
-                            @"Server=(localdb)\mssqllocaldb;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true"),
+                            @"Server=(localdb)\mssqllocaldb;Database=auth;MultipleActiveResultSets=true"),
                     ServiceLifetime.Transient);
                 services.AddDbContext<ZFContext>(options =>
-                    options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;Trusted_Connection=True;MultipleActiveResultSets=true"),
+                    options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=zf;MultipleActiveResultSets=true"),
                     ServiceLifetime.Transient);
             }
             else if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "Development")
             {
                 //Server=(localdb)\\mssqllocaldb;Database=MvcMovieContext-2;Trusted_Connection=True;MultipleActiveResultSets=true
-                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;MultipleActiveResultSets=true";
-                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;MultipleActiveResultSets=true";
+                var connectionAuthDb = @"Server=db;Database=auth;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;integrated security=false;MultipleActiveResultSets=true";
+                var connectionZFDb = @"Server=db;Database=zf;User=sa;Password=7zc7agecM6EmRmoiQmvYF5k3v;integrated security=false;MultipleActiveResultSets=true";
 
                 services.AddDbContext<ApplicationDbContext>(
                     options => options.UseSqlServer(connectionAuthDb), ServiceLifetime.Transient);
@@ -57,6 +57,10 @@ namespace webapp
                 services.AddDbContext<ZFContext>(options =>
                     options.UseSqlServer(
                         Configuration.GetConnectionString("ZFContext")), ServiceLifetime.Transient);
+            }
+            else
+            {
+                throw new InvalidOperationException("Please specify which env you want to use.");
             }
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
