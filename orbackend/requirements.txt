@@ -10,7 +10,7 @@ jsonschema==3.2.0
 MarkupSafe==1.1.1
 more-itertools==8.0.2
 ortools==7.4.7247
-pip==19.3.1
+pip==21.1
 protobuf==3.11.2
 pyrsistent==0.15.6
 pytz==2019.3
